@@ -2,6 +2,7 @@
 // State Management
 let cart = JSON.parse(localStorage.getItem('shoemall_cart')) || [];
 let currentUser = JSON.parse(localStorage.getItem('shoemall_user')) || null;
+let orders = JSON.parse(localStorage.getItem('shoemall_orders')) || [];
 
 // Initialize Page
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAuth();
 });
 
-// --- Authentication Logic ---
+// --- Authentication & Order History Logic ---
 function initAuth() {
     // Inject Auth Modal if not present
     if (!document.getElementById('auth-modal-overlay')) {
@@ -21,16 +22,27 @@ function initAuth() {
             <div class="modal-overlay" id="auth-modal-overlay">
                 <div class="auth-modal">
                     <button class="close-modal">&times;</button>
-                    <h2 id="auth-title">Welcome to ShoeMall</h2>
-                    <div class="auth-tabs">
-                        <div class="auth-tab active" data-mode="login">Login</div>
-                        <div class="auth-tab" data-mode="signup">Sign Up</div>
+                    <!-- Auth View (Login/Signup) -->
+                    <div id="auth-main-view">
+                        <h2 id="auth-title">Welcome to ShoeMall</h2>
+                        <div class="auth-tabs">
+                            <div class="auth-tab active" data-mode="login">Login</div>
+                            <div class="auth-tab" data-mode="signup">Sign Up</div>
+                        </div>
+                        <form class="auth-form" id="auth-form">
+                            <input type="text" id="auth-email" placeholder="Email Address" required>
+                            <input type="password" id="auth-pass" placeholder="Password" required>
+                            <button type="submit" class="auth-submit">Continue</button>
+                        </form>
                     </div>
-                    <form class="auth-form" id="auth-form">
-                        <input type="text" id="auth-email" placeholder="Email Address" required>
-                        <input type="password" id="auth-pass" placeholder="Password" required>
-                        <button type="submit" class="auth-submit">Continue</button>
-                    </form>
+                    <!-- Order History View -->
+                    <div id="orders-view" style="display: none;">
+                        <h2 style="margin-bottom: 20px; text-align: center;">My Order History</h2>
+                        <div id="orders-list" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                            <!-- Orders injected here -->
+                        </div>
+                        <button class="auth-submit" id="back-to-auth" style="margin-top: 20px;">Close</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -41,20 +53,19 @@ function initAuth() {
     const closeBtn = overlay.querySelector('.close-modal');
     const tabs = overlay.querySelectorAll('.auth-tab');
     const form = document.getElementById('auth-form');
+    const backBtn = document.getElementById('back-to-auth');
     let currentMode = 'login';
 
-    // Account Button Click
-    const accountBtns = document.querySelectorAll('.action-item:first-child'); // First item is Account
+    // Header Account Button Click
+    const accountBtns = document.querySelectorAll('.action-item:first-child'); 
     accountBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
+            overlay.classList.add('show');
             if (currentUser) {
-                // User already logged in, maybe show profile or just toggle logout
-                if (confirm(`Logged in as ${currentUser.email}. Log out?`)) {
-                    logout();
-                }
+                showView('orders');
             } else {
-                overlay.classList.add('show');
+                showView('auth');
             }
         });
     });
@@ -63,6 +74,8 @@ function initAuth() {
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) overlay.classList.remove('show');
     });
+
+    backBtn.addEventListener('click', () => overlay.classList.remove('show'));
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -79,12 +92,10 @@ function initAuth() {
         const pass = document.getElementById('auth-pass').value;
 
         if (currentMode === 'signup') {
-            // Simulated Signup
             currentUser = { email, pass };
             localStorage.setItem('shoemall_user', JSON.stringify(currentUser));
             showToast('Account created successfully!');
         } else {
-            // Simulated Login
             const savedUser = JSON.parse(localStorage.getItem('shoemall_user'));
             if (savedUser && savedUser.email === email && savedUser.pass === pass) {
                 currentUser = savedUser;
@@ -96,16 +107,61 @@ function initAuth() {
         }
         
         updateUserUI();
-        overlay.classList.remove('show');
+        showView('orders');
     });
 
     updateUserUI();
 }
 
+function showView(view) {
+    const authView = document.getElementById('auth-main-view');
+    const ordersView = document.getElementById('orders-view');
+    if (view === 'orders') {
+        authView.style.display = 'none';
+        ordersView.style.display = 'block';
+        renderOrderHistory();
+    } else {
+        authView.style.display = 'block';
+        ordersView.style.display = 'none';
+    }
+}
+
+function renderOrderHistory() {
+    const list = document.getElementById('orders-list');
+    const userOrders = orders.filter(o => o.user === currentUser?.email);
+
+    if (userOrders.length === 0) {
+        list.innerHTML = '<p style="text-align: center; color: #999; margin-top: 20px;">No transaction history found.</p>';
+        return;
+    }
+
+    list.innerHTML = userOrders.map(order => `
+        <div class="order-item-card" style="border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 12px; background: #fdfdfd;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: 800; color: var(--primary-red); font-size: 0.9rem;">ORDER ID: #${order.id}</span>
+                <span style="font-size: 0.75rem; color: #999;">${order.date}</span>
+            </div>
+            <div style="font-size: 0.85rem; color: #555; margin-bottom: 10px; line-height: 1.4;">
+                ${order.items.map(i => `<span style="display:block;">• ${i.title} (x${i.quantity})</span>`).join('')}
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #eee; padding-top: 10px; margin-top: 5px;">
+                <span style="font-weight: 800; font-size: 1.1rem; color: #222;">${order.total}</span>
+                <button class="view-receipt-btn" style="background:none; border:none; color: #007bff; cursor: pointer; font-size: 0.8rem; font-weight: 600; text-decoration: underline;" onclick="reDownload('${order.id}')">Download Receipt</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+window.reDownload = function(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (order) downloadReceipt(order.id, order.total, order.items);
+};
+
 function logout() {
     currentUser = null;
     updateUserUI();
-    showToast('Logged out.');
+    showToast('Logged out safely.');
+    document.getElementById('auth-modal-overlay').classList.remove('show');
 }
 
 function updateUserUI() {
@@ -114,24 +170,22 @@ function updateUserUI() {
 
     if (currentUser) {
         accountBtn.innerHTML = `
-            <i class="fas fa-user-check" style="color: var(--primary-red);"></i>
-            <span>${currentUser.email.split('@')[0]}</span>
-            <small class="logout-btn">Logout</small>
+            <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                <i class="fas fa-user-circle" style="color: var(--primary-red); font-size: 1.2rem;"></i>
+                <span style="font-size: 0.8rem; font-weight: 700;">${currentUser.email.split('@')[0]}</span>
+                <small class="logout-link" style="font-size: 8px; color: #999; text-decoration: underline;">Logout</small>
+            </div>
         `;
-        const logoutBtn = accountBtn.querySelector('.logout-btn');
-        logoutBtn.addEventListener('click', (e) => {
+        accountBtn.querySelector('.logout-link').onclick = (e) => {
             e.stopPropagation();
             logout();
-        });
+        };
     } else {
-        accountBtn.innerHTML = `
-            <i class="far fa-user"></i>
-            <span>Account</span>
-        `;
+        accountBtn.innerHTML = `<i class="far fa-user"></i> <span>Account</span>`;
     }
 }
 
-// --- Cart Logic ---
+// --- Cart Core Logic ---
 function updateCartCount() {
     const cartCountElements = document.querySelectorAll('.cart-count');
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -149,9 +203,6 @@ function initAddToCart() {
         const btn = e.target.closest('.add-to-cart-btn');
         if (!btn) return;
 
-        e.preventDefault();
-        e.stopPropagation();
-
         const card = btn.closest('.product-card');
         const product = {
             id: card.dataset.id || Math.random().toString(36).substr(2, 9),
@@ -161,20 +212,14 @@ function initAddToCart() {
             quantity: 1
         };
 
-        addToCart(product);
-        showToast(`Added ${product.title} to cart!`);
-    });
-}
+        const existing = cart.find(item => item.id === product.id);
+        if (existing) existing.quantity += 1;
+        else cart.push(product);
 
-function addToCart(product) {
-    const existing = cart.find(item => item.id === product.id);
-    if (existing) {
-        existing.quantity += 1;
-    } else {
-        cart.push(product);
-    }
-    saveCart();
-    renderCartItems();
+        saveCart();
+        renderCartItems();
+        showToast(`Added to cart!`);
+    });
 }
 
 function saveCart() {
@@ -182,23 +227,23 @@ function saveCart() {
     updateCartCount();
 }
 
-// --- Cart Drawer Logic ---
+// --- Cart Drawer Interface ---
 function initCartDrawer() {
     if (!document.getElementById('cart-drawer')) {
         const drawerHTML = `
             <div class="cart-drawer-overlay" id="drawer-overlay"></div>
             <div id="cart-drawer">
                 <div class="drawer-header">
-                    <h3>Your Shopping Cart</h3>
+                    <h3>Your Selection</h3>
                     <button class="close-drawer">&times;</button>
                 </div>
                 <div class="cart-items-list"></div>
                 <div class="drawer-footer">
                     <div class="cart-total">
-                        <span>Total:</span>
+                        <span>Total Payable:</span>
                         <span id="drawer-total-price">$0.00</span>
                     </div>
-                    <button class="checkout-btn">Proceed to Checkout</button>
+                    <button class="checkout-btn">Checkout Now</button>
                 </div>
             </div>
         `;
@@ -210,45 +255,69 @@ function initCartDrawer() {
     const closeBtn = drawer.querySelector('.close-drawer');
     const cartIcons = document.querySelectorAll('.cart-icon');
 
-    const toggleDrawer = () => {
+    const toggle = () => {
         drawer.classList.toggle('show');
         overlay.classList.toggle('show');
         if (drawer.classList.contains('show')) renderCartItems();
     };
 
-    cartIcons.forEach(icon => {
-        icon.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleDrawer();
-        });
-    });
+    cartIcons.forEach(i => i.onclick = (e) => { e.preventDefault(); toggle(); });
+    closeBtn.onclick = toggle;
+    overlay.onclick = toggle;
 
-    closeBtn.addEventListener('click', toggleDrawer);
-    overlay.addEventListener('click', toggleDrawer);
-
-    drawer.querySelector('.checkout-btn').addEventListener('click', () => {
+    // Checkout logic
+    drawer.querySelector('.checkout-btn').onclick = () => {
         if (!currentUser) {
-            showToast('Please login to checkout!');
+            showToast('Login to complete order');
             document.getElementById('auth-modal-overlay').classList.add('show');
+            showView('auth');
             return;
         }
-        if (cart.length === 0) {
-            showToast('Your cart is empty!');
-            return;
-        }
-        alert('Thank you for choosing ShoeMall! This is where the checkout process would begin.');
-    });
+        if (cart.length === 0) return showToast('Cart is empty!');
 
-    drawer.querySelector('.cart-items-list').addEventListener('click', (e) => {
-        const id = e.target.dataset.id;
-        if (e.target.classList.contains('plus-qty')) {
-            updateItemQty(id, 1);
-        } else if (e.target.classList.contains('minus-qty')) {
-            updateItemQty(id, -1);
-        } else if (e.target.classList.contains('remove-item')) {
-            removeFromCart(id);
+        const total = document.getElementById('drawer-total-price').textContent;
+        const msg = `PAYMENT REQUIRED\n----------------\nTotal: ${total}\n\nM-Pesa Paybill: 7382528\nAccount: ${currentUser.email.split('@')[0]}\n\nClick OK once paid.`;
+
+        if (confirm(msg)) {
+            const orderID = 'SMS-' + Math.floor(10000 + Math.random() * 90000);
+            const orderData = {
+                id: orderID,
+                date: new Date().toLocaleString(),
+                user: currentUser.email,
+                total: total,
+                items: [...cart]
+            };
+
+            orders.unshift(orderData);
+            localStorage.setItem('shoemall_orders', JSON.stringify(orders));
+            
+            downloadReceipt(orderID, total, cart);
+            showToast('Order successful! Receipt downloaded.');
+            
+            cart = [];
+            saveCart();
+            renderCartItems();
+            setTimeout(toggle, 1000);
         }
-    });
+    };
+
+    // Item controls
+    drawer.querySelector('.cart-items-list').onclick = (e) => {
+        const id = e.target.dataset.id;
+        const item = cart.find(i => i.id === id);
+        if (!item) return;
+
+        if (e.target.classList.contains('plus-qty')) item.quantity++;
+        else if (e.target.classList.contains('minus-qty')) item.quantity--;
+        else if (e.target.classList.contains('remove-item')) {
+            cart = cart.filter(i => i.id !== id);
+        }
+
+        if (item && item.quantity <= 0) cart = cart.filter(i => i.id !== id);
+        
+        saveCart();
+        renderCartItems();
+    };
 
     renderCartItems();
 }
@@ -259,19 +328,18 @@ function renderCartItems() {
     if (!list) return;
 
     if (cart.length === 0) {
-        list.innerHTML = '<p style="text-align: center; margin-top: 50px; color: #999;">Your cart is empty.</p>';
+        list.innerHTML = '<p style="text-align: center; color: #999; margin-top: 50px;">Empty Plate</p>';
         totalEl.textContent = '$0.00';
         return;
     }
 
-    let total = 0;
+    let totalVal = 0;
     list.innerHTML = cart.map(item => {
-        const priceValue = parseFloat(item.price.replace('$', ''));
-        total += priceValue * item.quantity;
-
+        const price = parseFloat(item.price.replace('$', ''));
+        totalVal += price * item.quantity;
         return `
             <div class="cart-item">
-                <img src="${item.image}" alt="${item.title}" class="cart-item-img">
+                <img src="${item.image}" class="cart-item-img">
                 <div class="cart-item-info">
                     <div class="cart-item-title">${item.title}</div>
                     <div class="cart-item-price">${item.price}</div>
@@ -285,104 +353,63 @@ function renderCartItems() {
             </div>
         `;
     }).join('');
-
-    totalEl.textContent = `$${total.toFixed(2)}`;
+    totalEl.textContent = `$${totalVal.toFixed(2)}`;
 }
 
-function updateItemQty(id, delta) {
-    const item = cart.find(i => i.id === id);
-    if (item) {
-        item.quantity += delta;
-        if (item.quantity <= 0) {
-            removeFromCart(id);
-        } else {
-            saveCart();
-            renderCartItems();
-        }
-    }
+// --- Utilities ---
+function downloadReceipt(id, total, items) {
+    const content = `SHOEMALL AFRICA\nORDER #${id}\nDATE: ${new Date().toLocaleString()}\nCUSTOMER: ${currentUser?.email}\n------------------\n${items.map(i => `${i.title} x${i.quantity} @ ${i.price}`).join('\n')}\n------------------\nTOTAL: ${total}\nPAYBILL: 7382528\n------------------\nThank you!`;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `ShoeMall_Receipt_${id}.txt`;
+    a.click();
 }
 
-function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
-    saveCart();
-    renderCartItems();
-}
-
-// --- Filter Logic ---
 function initFilter() {
-    const sideNavLinks = document.querySelectorAll('.side-nav a');
-    const productCards = document.querySelectorAll('.product-card');
-
-    sideNavLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            sideNavLinks.forEach(l => l.classList.remove('active-filter'));
-            link.classList.add('active-filter');
-            const category = link.textContent.trim().toLowerCase();
-            productCards.forEach(card => {
-                const cardCategory = card.dataset.category?.toLowerCase() || '';
-                if (category === 'all categories' || category === 'new arrivals' || cardCategory.includes(category) || category.includes(cardCategory)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+    const links = document.querySelectorAll('.side-nav a');
+    const cards = document.querySelectorAll('.product-card');
+    links.forEach(l => l.onclick = (e) => {
+        e.preventDefault();
+        links.forEach(x => x.classList.remove('active-filter'));
+        l.classList.add('active-filter');
+        const cat = l.textContent.trim().toLowerCase();
+        cards.forEach(c => {
+            const cardCat = c.dataset.category?.toLowerCase() || '';
+            c.style.display = (cat === 'all categories' || cat === 'new arrivals' || cardCat.includes(cat) || cat.includes(cardCat)) ? 'flex' : 'none';
         });
     });
 }
 
-// --- Search Logic ---
 function initSearch() {
-    const searchInput = document.querySelector('.search-bar input');
-    const searchBtn = document.querySelector('.search-btn');
-    const productCards = document.querySelectorAll('.product-card');
-    const isIndex = !!document.querySelector('.product-grid');
-
-    const handleSearch = () => {
-        const query = searchInput.value.toLowerCase().trim();
-        if (!isIndex) {
-            window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+    const input = document.querySelector('.search-bar input');
+    const btn = document.querySelector('.search-btn');
+    const cards = document.querySelectorAll('.product-card');
+    const runSearch = () => {
+        const q = input.value.toLowerCase().trim();
+        if (!document.querySelector('.product-grid')) {
+            window.location.href = `index.html?search=${encodeURIComponent(q)}`;
             return;
         }
-        let found = 0;
-        productCards.forEach(card => {
-            const title = card.querySelector('.product-title').textContent.toLowerCase();
-            const category = card.dataset.category?.toLowerCase() || '';
-            if (title.includes(query) || category.includes(query)) {
-                card.style.display = 'flex';
-                found++;
-            } else {
-                card.style.display = 'none';
-            }
+        let count = 0;
+        cards.forEach(c => {
+            const hasQ = c.innerText.toLowerCase().includes(q);
+            c.style.display = hasQ ? 'flex' : 'none';
+            if (hasQ) count++;
         });
-        if (found === 0 && query !== '') showToast('No products match your search.');
+        if (count === 0 && q !== '') showToast('No matches');
     };
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchParam = urlParams.get('search');
-    if (searchParam && isIndex && searchInput) {
-        searchInput.value = searchParam;
-        setTimeout(handleSearch, 100);
-    }
-
-    if (searchBtn) searchBtn.addEventListener('click', handleSearch);
-    if (searchInput) {
-        searchInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') handleSearch();
-            else if (searchInput.value === '' && isIndex) handleSearch(); 
-        });
-    }
+    if (btn) btn.onclick = runSearch;
+    if (input) input.onkeyup = (e) => { if (e.key === 'Enter') runSearch(); };
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('search')) { input.value = params.get('search'); setTimeout(runSearch, 100); }
 }
 
-// --- UI Helpers ---
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.className = 'cart-toast';
-    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 100);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 500);
-    }, 3000);
+function showToast(m) {
+    const t = document.createElement('div');
+    t.className = 'cart-toast';
+    t.innerHTML = `<i class="fas fa-check-circle"></i> ${m}`;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add('show'), 100);
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 500); }, 2500);
 }
