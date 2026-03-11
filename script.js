@@ -123,7 +123,7 @@ function initAuth() {
             if (allUsers.find(u => u.email === email)) {
                 return showToast('User already exists!');
             }
-            currentUser = { email, pass };
+            currentUser = { email, pass, active: true };
             allUsers.push(currentUser);
             localStorage.setItem('shoemall_all_users', JSON.stringify(allUsers));
             localStorage.setItem('shoemall_user', JSON.stringify(currentUser));
@@ -131,6 +131,9 @@ function initAuth() {
         } else {
             const user = allUsers.find(u => u.email === email && u.pass === pass);
             if (user) {
+                if (user.active === false && email !== ADMIN_EMAIL) {
+                    return showToast('Your account has been deactivated by Admin.');
+                }
                 currentUser = user;
                 localStorage.setItem('shoemall_user', JSON.stringify(currentUser));
                 showToast(email === ADMIN_EMAIL ? 'Admin System Secure' : 'Welcome Back!');
@@ -190,22 +193,58 @@ window.switchAdminTab = function(tab) {
         `;
     } else {
         content.innerHTML = `
+            <div style="margin-bottom: 10px; text-align: right;">
+                <button onclick="downloadCustomerList()" style="background: #28a745; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Export CSV</button>
+            </div>
             <table class="admin-table">
                 <thead>
-                    <tr><th>Email</th><th>Role</th><th>Registered</th></tr>
+                    <tr><th>Email</th><th>Status</th><th>Actions</th></tr>
                 </thead>
                 <tbody>
                     ${allUsers.map(u => `
                         <tr>
-                            <td>${u.email}</td>
-                            <td>${u.email === ADMIN_EMAIL ? '<span class="admin-badge">ADMIN</span>' : 'Customer'}</td>
-                            <td>Active</td>
+                            <td>${u.email} ${u.email === ADMIN_EMAIL ? '<span class="admin-badge">ADMIN</span>' : ''}</td>
+                            <td><span style="color: ${u.active !== false ? 'green' : 'red'}; font-weight: 700;">${u.active !== false ? 'ACTIVE' : 'SUSPENDED'}</span></td>
+                            <td>
+                                ${u.email !== ADMIN_EMAIL ? `
+                                    <button onclick="toggleUserStatus('${u.email}')" style="background: none; border: 1px solid ${u.active !== false ? 'red' : 'green'}; color: ${u.active !== false ? 'red' : 'green'}; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">
+                                        ${u.active !== false ? 'Deactivate' : 'Activate'}
+                                    </button>
+                                ` : '-'}
+                            </td>
                         </tr>
                     `).join('')}
                 </tbody>
             </table>
         `;
     }
+};
+
+window.toggleUserStatus = function(email) {
+    const user = allUsers.find(u => u.email === email);
+    if (user && email !== ADMIN_EMAIL) {
+        user.active = user.active !== false ? false : true;
+        localStorage.setItem('shoemall_all_users', JSON.stringify(allUsers));
+        switchAdminTab('customers');
+        showToast(`User ${user.active ? 'Activated' : 'Suspended'}`);
+    }
+};
+
+window.downloadCustomerList = function() {
+    let csv = "Email,Role,Status\n";
+    allUsers.forEach(u => {
+        const role = u.email === ADMIN_EMAIL ? "Admin" : "Customer";
+        const status = u.active !== false ? "Active" : "Suspended";
+        csv += `${u.email},${role},${status}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ShoeMall_Customers_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`;
+    a.click();
+    showToast('Customer List Exported');
 };
 
 // --- User Profile Features ---

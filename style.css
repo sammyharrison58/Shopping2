@@ -875,13 +875,66 @@ footer {
     border-color: var(--primary-red);
 }
 
-.admin-badge {
+/* --- Broadcast Alert --- */
+.broadcast-alert {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
     background: #000;
     color: #fff;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.6rem;
-    font-weight: 800;
-    margin-left: 5px;
-    vertical-align: middle;
+    padding: 15px 25px;
+    border-radius: 50px;
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border: 2px solid var(--primary-red);
+}
+
+.broadcast-alert.show {
+    top: 20px;
+}
+
+.broadcast-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.broadcast-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.broadcast-close:hover {
+    color: #fff;
+}
+
+#admin-broadcast-area {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fdfdfd;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+}
+
+.broadcast-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    resize: none;
+    font-family: inherit;
 }
