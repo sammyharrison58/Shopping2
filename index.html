@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShoeMall | Step into Style</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Top Utility Bar -->
+    <div class="top-bar">
+        <span>Welcome to ShoeMall!</span>
+        <a href="#">Sell on ShoeMall</a>
+        <a href="About us.html">Help Center</a>
+        <a href="#">KiliCoins</a>
+        <a href="Contacts.html">Contact Us</a>
+    </div>
+
+    <!-- Main Header -->
+    <header>
+        <a href="index.html" class="logo">
+            <i class="fas fa-shoe-prints"></i> ShoeMall
+        </a>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search for brands, styles, or sizes...">
+            <button class="search-btn">Search</button>
+        </div>
+
+        <div class="header-actions">
+            <a href="#" class="action-item">
+                <i class="far fa-user"></i>
+                <span>Account</span>
+            </a>
+            <a href="#" class="action-item cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+                <span>Cart</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Category Sidebar -->
+        <aside class="sidebar">
+            <h3>Categories</h3>
+            <ul class="side-nav">
+                <li><a href="#" class="active-filter"><i class="fas fa-th-large" style="width: 25px;"></i> All Categories</a></li>
+                <li><a href="#"><i class="fas fa-running" style="width: 25px;"></i> Sneakers</a></li>
+                <li><a href="#"><i class="fas fa-user-tie" style="width: 25px;"></i> Formal Shoes</a></li>
+                <li><a href="#"><i class="fas fa-hiking" style="width: 25px;"></i> Boots</a></li>
+                <li><a href="#"><i class="fas fa-umbrella-beach" style="width: 25px;"></i> Sandals</a></li>
+                <li><a href="#"><i class="fas fa-child" style="width: 25px;"></i> Kids' Shoes</a></li>
+                <li><a href="#"><i class="fas fa-star" style="width: 25px;"></i> New Arrivals</a></li>
+                <li><a href="#"><i class="fas fa-percentage" style="width: 25px;"></i> Clearance Sale</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="hero-content">
+            <!-- Hero Banner -->
+            <section class="banner" style="background-image: url('premium_shoe_hero_banner_1773218997495.png'); background-color: #222;">
+                <div class="banner-text">
+                    <span class="flash-badge" style="margin-bottom: 15px; display: inline-block;">NEW SEASON</span>
+                    <h2>Elevate Your <br>Every Step</h2>
+                    <p>Discover the height of comfort and style with our exclusive Spring 2026 Collection.</p>
+                    <a href="#" class="shop-now">Explore Collection</a>
+                </div>
+            </section>
+
+            <!-- Flash Sale Section -->
+            <section class="flash-sale">
+                <div class="section-header">
+                    <h2>Hot Releases <span class="flash-badge">Weekly Deals</span></h2>
+                    <a href="#" style="color: var(--primary-red); text-decoration: none; font-weight: 600;">View All
+                        ></a>
+                </div>
+
+                <div class="product-grid">
+                    <!-- Product 1: Sneakers -->
+                    <div class="product-card" data-id="1" data-category="sneakers">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">-45%</span>
+                                <img src="white_running_sneakers_1773219015906.png" alt="Pro Marathon Sneakers">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Ultra-Light Pro Marathon Sneakers - Red/White</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$45.00</span>
+                                    <span class="old-price">$82.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+
+                    <!-- Product 2: Formal -->
+                    <div class="product-card" data-id="2" data-category="formal shoes">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">-20%</span>
+                                <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=800" alt="Formal Shoes">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Hand-Crafted Italian Brown Leather Oxford Shoes</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$120.00</span>
+                                    <span class="old-price">$150.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+
+                    <!-- Product 3: Boots -->
+                    <div class="product-card" data-id="3" data-category="boots">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">-30%</span>
+                                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800" alt="Outdoor Boots">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Terrain-Ready Waterproof Outdoor Timber Boots</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$89.00</span>
+                                    <span class="old-price">$127.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+
+                    <!-- Product 4: Sandals -->
+                    <div class="product-card" data-id="4" data-category="sandals">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">-10%</span>
+                                <img src="https://images.unsplash.com/photo-1562183241-b937e95585b6?auto=format&fit=crop&q=80&w=800"
+                                    alt="Sandals">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Executive Comfort Leather Summer Sandals</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$25.00</span>
+                                    <span class="old-price">$30.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+
+                    <!-- Product 5: Kids -->
+                    <div class="product-card" data-id="5" data-category="kids' shoes">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">NEW</span>
+                                <img src="https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&q=80&w=800" alt="Kids Sneakers">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Glow-Boost Kids' Lightweight Sport Trainers</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$32.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+
+                    <!-- Product 6: Clearance -->
+                    <div class="product-card" data-id="6" data-category="clearance sale">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">-60%</span>
+                                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800" alt="Clearance">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Urban Streetwear High-Top Suede Sneakers</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$19.99</span>
+                                    <span class="old-price">$49.99</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>About ShoeMall</h4>
+                <ul class="footer-links">
+                    <li><a href="About us.html">Our Story</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Career</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                    <li><a href="Contacts.html">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Shop Categories</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Men's Shoes</a></li>
+                    <li><a href="#">Women's Shoes</a></li>
+                    <li><a href="#">Kids' Shoes</a></li>
+                    <li><a href="#">Accessories</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect With Us</h4>
+                <div class="social-links" style="display: flex; gap: 15px; font-size: 1.5rem; margin-top: 10px;">
+                    <a href="#" style="color: #FFF;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2026 ShoeMall Africa. All Rights Reserved. Built with ❤️ for Shoe Lovers.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

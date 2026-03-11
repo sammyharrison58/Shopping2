@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | ShoeMall</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Utility Bar -->
+    <div class="top-bar">
+        <span>Welcome to ShoeMall!</span>
+        <a href="#">Sell on ShoeMall</a>
+        <a href="About us.html">Help Center</a>
+        <a href="#">KiliCoins</a>
+        <a href="Contacts.html">Contact Us</a>
+    </div>
+
+    <!-- Main Header -->
+    <header>
+        <a href="index.html" class="logo">
+            <i class="fas fa-shoe-prints"></i> ShoeMall
+        </a>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search for brands, styles, or sizes...">
+            <button class="search-btn">Search</button>
+        </div>
+
+        <div class="header-actions">
+            <a href="#" class="action-item">
+                <i class="far fa-user"></i>
+                <span>Account</span>
+            </a>
+            <a href="#" class="action-item cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+                <span>Cart</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="main-container" style="grid-template-columns: 1fr; padding: 60px 20px;">
+        <div class="contact-grid">
+            <section style="background: white; padding: 40px; border-radius: 8px; box-shadow: var(--shadow);">
+                <h2 style="margin-bottom: 30px;">Get in Touch</h2>
+                <form class="contact-form">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="Your Name">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="email@example.com">
+                    <label>Message</label>
+                    <textarea rows="5" placeholder="How can we help you?"></textarea>
+                    <button type="submit" class="submit-btn"
+                        onclick="event.preventDefault(); alert('Message sent! We will get back to you soon.');">Send
+                        Message</button>
+                </form>
+            </section>
+
+            <section
+                style="background: white; padding: 40px; border-radius: 8px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 30px;">
+                <div>
+                    <h3>Our Headquarters</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Mall Square, 4th Floor<br>Nairobi, Kenya</p>
+                </div>
+                <div>
+                    <h3>Direct Contact</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;"><i class="fas fa-phone"></i> +254 700 000 000
+                    </p>
+                    <p style="color: var(--text-muted);"><i class="fas fa-envelope"></i> help@shoemall.africa</p>
+                </div>
+                <div>
+                    <h3>Social Support</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Reach us on WhatsApp or Twitter for instant
+                        support.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>About ShoeMall</h4>
+                <ul class="footer-links">
+                    <li><a href="About us.html">Our Story</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Career</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                    <li><a href="Contacts.html">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect With Us</h4>
+                <div class="social-links" style="display: flex; gap: 15px; font-size: 1.5rem; margin-top: 10px;">
+                    <a href="#" style="color: #FFF;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2026 ShoeMall Africa. All Rights Reserved. Built with ❤️ for Shoe Lovers.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
