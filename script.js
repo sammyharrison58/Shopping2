@@ -6,6 +6,7 @@ let allUsers = JSON.parse(localStorage.getItem('shoemall_all_users')) || [];
 let orders = JSON.parse(localStorage.getItem('shoemall_orders')) || [];
 
 const ADMIN_EMAIL = "sammyharrison58@gmail.com";
+let currentBroadcast = JSON.parse(localStorage.getItem('shoemall_broadcast')) || null;
 
 // Initialize Page
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,7 +16,36 @@ document.addEventListener('DOMContentLoaded', () => {
     initAddToCart();
     initCartDrawer();
     initAuth();
+    checkBroadcast();
 });
+
+// --- Broadcast System ---
+function checkBroadcast() {
+    if (!currentBroadcast) return;
+    
+    // Inject alert if not there
+    if (!document.getElementById('global-broadcast')) {
+        const html = `
+            <div class="broadcast-alert" id="global-broadcast">
+                <div class="broadcast-content">
+                    <i class="fas fa-bullhorn" style="color: var(--primary-red);"></i>
+                    <span>${currentBroadcast}</span>
+                </div>
+                <button class="broadcast-close" onclick="dismissBroadcast()">&times;</button>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('afterbegin', html);
+        setTimeout(() => document.getElementById('global-broadcast').classList.add('show'), 500);
+    }
+}
+
+window.dismissBroadcast = function() {
+    const el = document.getElementById('global-broadcast');
+    if (el) {
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 600);
+    }
+};
 
 // --- Authentication & Admin Logic ---
 function initAuth() {
@@ -43,7 +73,7 @@ function initAuth() {
                     <div id="orders-view" style="display: none;">
                         <h2 style="margin-bottom: 20px; text-align: center;">My Order History</h2>
                         <div id="orders-list" style="max-height: 400px; overflow-y: auto;"></div>
-                        <button class="auth-submit" id="close-orders" style="margin-top: 20px;">Close</button>
+                        <button class="auth-submit" id="close-orders" style="margin-top: 20px;">Close Pagel</button>
                     </div>
 
                     <!-- View 3: Admin Dashboard -->
@@ -62,8 +92,9 @@ function initAuth() {
                         </div>
 
                         <div class="admin-tabs">
-                            <button class="admin-tab-btn active" onclick="switchAdminTab('orders')">System Orders</button>
-                            <button class="admin-tab-btn" onclick="switchAdminTab('customers')">Customer Cloud</button>
+                            <button class="admin-tab-btn active" onclick="switchAdminTab('orders')">Orders</button>
+                            <button class="admin-tab-btn" onclick="switchAdminTab('customers')">Users</button>
+                            <button class="admin-tab-btn" onclick="switchAdminTab('broadcast')">Broadcast</button>
                         </div>
 
                         <div id="admin-content" class="admin-table-container">
@@ -132,11 +163,12 @@ function initAuth() {
             const user = allUsers.find(u => u.email === email && u.pass === pass);
             if (user) {
                 if (user.active === false && email !== ADMIN_EMAIL) {
-                    return showToast('Your account has been deactivated by Admin.');
+                    return showToast('Account Suspended by Admin.');
                 }
                 currentUser = user;
                 localStorage.setItem('shoemall_user', JSON.stringify(currentUser));
                 showToast(email === ADMIN_EMAIL ? 'Admin System Secure' : 'Welcome Back!');
+                checkBroadcast();
             } else {
                 return showToast('Invalid credentials.');
             }
@@ -160,11 +192,9 @@ function showView(view) {
 
 // --- Admin Features ---
 function renderAdminDashboard() {
-    // Stats
     const revenue = orders.reduce((sum, o) => sum + parseFloat(o.total.replace('$','')), 0);
     document.getElementById('admin-stat-revenue').textContent = `$${revenue.toFixed(2)}`;
     document.getElementById('admin-stat-users').textContent = allUsers.length;
-    
     switchAdminTab('orders');
 }
 
@@ -176,48 +206,52 @@ window.switchAdminTab = function(tab) {
     if (tab === 'orders') {
         content.innerHTML = `
             <table class="admin-table">
-                <thead>
-                    <tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr>
-                </thead>
+                <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
                 <tbody>
-                    ${orders.map(o => `
-                        <tr>
-                            <td>#${o.id}</td>
-                            <td>${o.user.split('@')[0]}</td>
-                            <td>${o.total}</td>
-                            <td><span style="color:green; font-weight:700;">PAID</span></td>
-                        </tr>
-                    `).join('') || '<tr><td colspan="4" style="text-align:center;">No runs found</td></tr>'}
+                    ${orders.map(o => `<tr><td>#${o.id}</td><td>${o.user.split('@')[0]}</td><td>${o.total}</td><td><span style="color:green; font-weight:700;">PAID</span></td></tr>`).join('') || '<tr><td colspan="4" style="text-align:center;">Empty log</td></tr>'}
+                </tbody>
+            </table>
+        `;
+    } else if (tab === 'customers') {
+        content.innerHTML = `
+            <div style="margin-bottom:10px; text-align:right;"><button onclick="downloadCustomerList()" style="background:#28a745; color:#fff; padding:5px 10px; border:none; border-radius:4px; cursor:pointer;">Export CSV</button></div>
+            <table class="admin-table">
+                <thead><tr><th>Email</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                    ${allUsers.map(u => `<tr><td>${u.email} ${u.email===ADMIN_EMAIL ? '<span class="admin-badge">ADMIN</span>' : ''}</td><td><span style="color:${u.active!==false?'green':'red'}; font-weight:700;">${u.active!==false?'ACTIVE':'SUSPENDED'}</span></td><td>${u.email!==ADMIN_EMAIL ? `<button onclick="toggleUserStatus('${u.email}')" style="background:none; border:1px solid ${u.active!==false?'red':'green'}; color:${u.active!==false?'red':'green'}; cursor:pointer;">${u.active!==false?'Suspend':'Activate'}</button>` : '-'}</td></tr>`).join('')}
                 </tbody>
             </table>
         `;
     } else {
         content.innerHTML = `
-            <div style="margin-bottom: 10px; text-align: right;">
-                <button onclick="downloadCustomerList()" style="background: #28a745; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Export CSV</button>
+            <div id="admin-broadcast-area">
+                <h4 style="margin-bottom:10px;">Send Global Announcement</h4>
+                <textarea class="broadcast-input" id="broadcast-msg" placeholder="Type message for all users..." rows="3">${currentBroadcast || ''}</textarea>
+                <div style="display:flex; gap:10px;">
+                    <button class="auth-submit" onclick="sendBroadcast()" style="flex:2;">Confirm Broadcast</button>
+                    <button class="auth-submit" onclick="clearBroadcast()" style="flex:1; background:#666;">Clear Active</button>
+                </div>
+                <p style="font-size:0.75rem; color:#999; margin-top:10px;">This message will appear at the top of the screen for all users.</p>
             </div>
-            <table class="admin-table">
-                <thead>
-                    <tr><th>Email</th><th>Status</th><th>Actions</th></tr>
-                </thead>
-                <tbody>
-                    ${allUsers.map(u => `
-                        <tr>
-                            <td>${u.email} ${u.email === ADMIN_EMAIL ? '<span class="admin-badge">ADMIN</span>' : ''}</td>
-                            <td><span style="color: ${u.active !== false ? 'green' : 'red'}; font-weight: 700;">${u.active !== false ? 'ACTIVE' : 'SUSPENDED'}</span></td>
-                            <td>
-                                ${u.email !== ADMIN_EMAIL ? `
-                                    <button onclick="toggleUserStatus('${u.email}')" style="background: none; border: 1px solid ${u.active !== false ? 'red' : 'green'}; color: ${u.active !== false ? 'red' : 'green'}; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">
-                                        ${u.active !== false ? 'Deactivate' : 'Activate'}
-                                    </button>
-                                ` : '-'}
-                            </td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
         `;
     }
+};
+
+window.sendBroadcast = function() {
+    const msg = document.getElementById('broadcast-msg').value.trim();
+    if (!msg) return showToast('Enter a message');
+    currentBroadcast = msg;
+    localStorage.setItem('shoemall_broadcast', JSON.stringify(currentBroadcast));
+    showToast('Broadcast Published!');
+    checkBroadcast();
+};
+
+window.clearBroadcast = function() {
+    currentBroadcast = null;
+    localStorage.removeItem('shoemall_broadcast');
+    dismissBroadcast();
+    showToast('Broadcast Cleared');
+    document.getElementById('broadcast-msg').value = '';
 };
 
 window.toggleUserStatus = function(email) {
