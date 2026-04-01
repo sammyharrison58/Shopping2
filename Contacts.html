@@ -83,16 +83,18 @@
         <div class="contact-grid">
             <section style="background: white; padding: 40px; border-radius: 8px; box-shadow: var(--shadow);">
                 <h2 style="margin-bottom: 30px;">Get in Touch</h2>
-                <form class="contact-form">
+                <form class="contact-form" action="https://formsubmit.co/sammyharrison58@gmail.com" method="POST">
+                    <!-- Security and routing options -->
+                    <input type="hidden" name="_subject" value="New Contact Inquiry from ShoeMall!">
+                    <input type="hidden" name="_captcha" value="false">
+                    
                     <label>Full Name</label>
-                    <input type="text" placeholder="Your Name">
+                    <input type="text" name="name" placeholder="Your Name" required>
                     <label>Email Address</label>
-                    <input type="email" placeholder="email@example.com">
+                    <input type="email" name="email" placeholder="email@example.com" required>
                     <label>Message</label>
-                    <textarea rows="5" placeholder="How can we help you?"></textarea>
-                    <button type="submit" class="submit-btn"
-                        onclick="event.preventDefault(); alert('Message sent! We will get back to you soon.');">Send
-                        Message</button>
+                    <textarea name="message" rows="5" placeholder="How can we help you?" required></textarea>
+                    <button type="submit" class="submit-btn">Send Message</button>
                 </form>
             </section>
 
@@ -104,9 +106,9 @@
                 </div>
                 <div>
                     <h3>Direct Contact</h3>
-                    <p style="color: var(--text-muted); margin-top: 10px;"><i class="fas fa-phone"></i> +254 700 000 000
+                    <p style="color: var(--text-muted); margin-top: 10px;"><i class="fas fa-phone"></i> 0748082906
                     </p>
-                    <p style="color: var(--text-muted);"><i class="fas fa-envelope"></i> help@shoemall.africa</p>
+                    <p style="color: var(--text-muted);"><i class="fas fa-envelope"></i> sammyharrison58@gmail.com</p>
                 </div>
                 <div>
                     <h3>Social Support</h3>
