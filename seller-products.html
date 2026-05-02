@@ -160,6 +160,7 @@
                 <li><a href="seller-products.html" class="active"><i class="fas fa-box"></i> Products</a></li>
                 <li><a href="seller-orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
                 <li><a href="seller-payouts.html"><i class="fas fa-wallet"></i> Payouts</a></li>
+                <li id="adminSidebarLink" style="display: none;"><a href="seller-admin.html" style="border: 1px solid #ef4444; margin-top: 10px;"><i class="fas fa-user-shield" style="color: #ef4444;"></i> Admin Panel</a></li>
                 <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
                 <li style="margin-top: 40px;"><a href="seller-auth.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
@@ -229,6 +230,11 @@
         ];
 
         function initProducts() {
+            // Show Admin Link if applicable
+            if (loggedInEmail === SAMMY_EMAIL) {
+                if(document.getElementById('adminSidebarLink')) document.getElementById('adminSidebarLink').style.display = 'block';
+            }
+
             const tbody = document.querySelector('.product-table tbody');
             if (loggedInEmail === SAMMY_EMAIL) {
                 renderProducts(sammyProducts);

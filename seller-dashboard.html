@@ -225,6 +225,7 @@
                 <li><a href="seller-products.html"><i class="fas fa-box"></i> Products</a></li>
                 <li><a href="seller-orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
                 <li><a href="seller-payouts.html"><i class="fas fa-wallet"></i> Payouts</a></li>
+                <li id="adminSidebarLink" style="display: none;"><a href="seller-admin.html" style="border: 1px solid #ef4444; margin-top: 10px;"><i class="fas fa-user-shield" style="color: #ef4444;"></i> Admin Panel</a></li>
                 <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
                 <li style="margin-top: 40px;"><a href="seller-auth.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
@@ -241,18 +242,18 @@
             <!-- Stats Overview -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <span class="stat-label">Gross Revenue</span>
-                    <div class="stat-value">$0.00</div>
+                    <span class="stat-label" id="revLabel">Gross Revenue</span>
+                    <div class="stat-value" id="revValue">$0.00</div>
                     <div class="stat-footer">
-                        No sales yet this month
+                        <span id="revTrend">No activity yet</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-label">Net Earnings (After 5% Comm.)</span>
-                    <div class="stat-value">$0.00</div>
-                    <div class="commission-note">Commission: $0.00</div>
+                    <span class="stat-label" id="netLabel">Net Earnings (After 5% Comm.)</span>
+                    <div class="stat-value" id="netValue">$0.00</div>
+                    <div class="commission-note" id="commNote">Commission: $0.00</div>
                     <div class="stat-footer">
-                        No earnings yet
+                        <span id="netTrend">No activity yet</span>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -361,6 +362,13 @@
 
         // Initialize Dashboard
         function initDashboard() {
+            const isAdmin = (loggedInEmail === SAMMY_EMAIL);
+            
+            // Show Admin Link if applicable
+            if (isAdmin) {
+                document.getElementById('adminSidebarLink').style.display = 'block';
+            }
+            
             // Set Name
             document.getElementById('sellerName').textContent = (loggedInEmail === SAMMY_EMAIL) ? sammyData.name : loggedInEmail.split('@')[0];
             

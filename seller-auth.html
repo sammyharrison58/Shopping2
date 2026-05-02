@@ -259,6 +259,7 @@
             e.preventDefault();
             const email = this.querySelector('input[type="email"]').value;
             localStorage.setItem('seller_logged_in', email);
+            trackSeller(email);
             window.location.href = 'seller-dashboard.html';
         });
 
@@ -266,9 +267,18 @@
             e.preventDefault();
             const email = this.querySelector('input[type="email"]').value;
             localStorage.setItem('seller_logged_in', email);
+            trackSeller(email);
             alert('Store created successfully! Welcome to ShoeMall.');
             window.location.href = 'seller-dashboard.html';
         });
+
+        function trackSeller(email) {
+            let sellers = JSON.parse(localStorage.getItem('all_platform_sellers') || "[]");
+            if (!sellers.includes(email)) {
+                sellers.push(email);
+                localStorage.setItem('all_platform_sellers', JSON.stringify(sellers));
+            }
+        }
     </script>
 </body>
 </html>

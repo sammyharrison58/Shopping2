@@ -140,6 +140,7 @@
                 <li><a href="seller-products.html"><i class="fas fa-box"></i> Products</a></li>
                 <li><a href="seller-orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
                 <li><a href="seller-payouts.html" class="active"><i class="fas fa-wallet"></i> Payouts</a></li>
+                <li id="adminSidebarLink" style="display: none;"><a href="seller-admin.html" style="border: 1px solid #ef4444; margin-top: 10px;"><i class="fas fa-user-shield" style="color: #ef4444;"></i> Admin Panel</a></li>
                 <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
                 <li style="margin-top: 40px;"><a href="seller-auth.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
@@ -148,11 +149,11 @@
         <main class="dash-main">
             <div class="balance-card">
                 <div>
-                    <div style="opacity: 0.8; font-size: 0.9rem;">Available for Withdrawal</div>
-                    <div class="balance-amount">$0.00</div>
-                    <div style="font-size: 0.8rem; opacity: 0.7;">Start selling to build your balance</div>
+                    <div style="opacity: 0.8; font-size: 0.9rem;" id="balanceLabel">Available for Withdrawal</div>
+                    <div class="balance-amount" id="balanceValue">$0.00</div>
+                    <div style="font-size: 0.8rem; opacity: 0.7;" id="balanceNote">Start selling to build your balance</div>
                 </div>
-                <button class="btn-withdraw" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-paper-plane"></i> Withdraw Funds</button>
+                <button class="btn-withdraw" id="withdrawBtn" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-paper-plane"></i> Withdraw Funds</button>
             </div>
 
             <div class="payout-grid">
@@ -215,43 +216,65 @@
         const SAMMY_EMAIL = "sammyharrison58@gmail.com";
         const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
 
-        const sammyPayouts = {
-            balance: "$1,245.50",
-            totalSales: "$15,400.00",
-            fees: "$770.00",
+        const sammyData = {
+            ownSales: 15400,
             history: [
                 { date: "May 01, 2026", amount: "$2,100.00", method: "Bank Transfer (...4421)", status: "Completed" },
-                { date: "April 15, 2026", amount: "$1,850.25", method: "Bank Transfer (...4421)", status: "Completed" },
-                { date: "April 01, 2026", amount: "$940.00", method: "PayPal (premiumkicks@...)", status: "Completed" }
+                { date: "April 15, 2026", amount: "$1,850.25", method: "Bank Transfer (...4421)", status: "Completed" }
             ]
         };
 
         function initPayouts() {
-            if (loggedInEmail === SAMMY_EMAIL) {
-                renderSammyPayouts();
+            const isAdmin = (loggedInEmail === SAMMY_EMAIL);
+            if (isAdmin) {
+                if(document.getElementById('adminSidebarLink')) document.getElementById('adminSidebarLink').style.display = 'block';
+            }
+            if (isAdmin) {
+                renderAdminPayouts();
             } else {
                 renderUserPayouts();
             }
         }
 
-        function renderSammyPayouts() {
-            document.querySelector('.balance-amount').textContent = sammyPayouts.balance;
-            const withdrawBtn = document.querySelector('.btn-withdraw');
+        function renderAdminPayouts() {
+            // Aggregate Platform commissions
+            let totalOtherSellersSales = 0;
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('products_') && !key.includes(SAMMY_EMAIL)) {
+                    const sellerProducts = JSON.parse(localStorage.getItem(key));
+                    sellerProducts.forEach(p => {
+                        totalOtherSellersSales += (p.price * 2); // Mock 2 sales per product
+                    });
+                }
+            }
+
+            const platformCommissions = totalOtherSellersSales * 0.05;
+            const adminShareOfOwnSales = sammyData.ownSales * 0.95;
+            const totalAdminIncome = adminShareOfOwnSales + platformCommissions;
+
+            // Update UI
+            document.getElementById('balanceLabel').textContent = "Total Admin Earnings";
+            document.getElementById('balanceValue').textContent = `$${totalAdminIncome.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('balanceNote').innerHTML = `<i class="fas fa-chart-line"></i> Incl. $${platformCommissions.toFixed(2)} Platform Fees`;
+            
+            const withdrawBtn = document.getElementById('withdrawBtn');
             withdrawBtn.style.opacity = "1";
             withdrawBtn.style.cursor = "pointer";
             
             const stats = document.querySelectorAll('.section-card span[style*="font-weight: 700"]');
-            stats[0].textContent = sammyPayouts.totalSales;
-            stats[1].textContent = sammyPayouts.fees;
+            stats[0].textContent = `$${(sammyData.ownSales + totalOtherSellersSales).toLocaleString()}`;
+            stats[1].textContent = `$${platformCommissions.toLocaleString()}`;
             
             // Progress bars
             const bars = document.querySelectorAll('.section-card div[style*="height: 6px"] div');
             bars[0].style.width = "100%";
-            bars[1].style.width = "5%";
+            bars[1].style.width = "10%";
 
             const tbody = document.querySelector('.history-table tbody');
             tbody.innerHTML = '';
-            sammyPayouts.history.forEach(h => {
+            sammyData.history.forEach(h => {
                 tbody.innerHTML += `
                     <tr>
                         <td>${h.date}</td>
@@ -269,7 +292,7 @@
                 const fees = totalSales * 0.05;
                 const net = totalSales * 0.95;
 
-                document.querySelector('.balance-amount').textContent = `$${net.toFixed(2)}`;
+                document.getElementById('balanceValue').textContent = `$${net.toFixed(2)}`;
                 const stats = document.querySelectorAll('.section-card span[style*="font-weight: 700"]');
                 stats[0].textContent = `$${totalSales.toFixed(2)}`;
                 stats[1].textContent = `$${fees.toFixed(2)}`;

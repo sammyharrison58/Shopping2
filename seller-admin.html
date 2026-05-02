@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Administration | ShoeMall</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            flex-grow: 1;
+        }
+
+        .dash-sidebar {
+            background: #1e293b;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .dash-nav {
+            list-style: none;
+            margin-top: 40px;
+        }
+
+        .dash-nav li {
+            margin-bottom: 10px;
+        }
+
+        .dash-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .dash-nav a:hover, .dash-nav a.active {
+            background: #334155;
+            color: white;
+        }
+
+        .dash-main {
+            padding: 40px;
+        }
+
+        .admin-banner {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn {
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            color: #ef4444;
+            border-bottom: 2px solid #ef4444;
+        }
+
+        .status-pill {
+            padding: 3px 8px;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .broadcast-area {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .broadcast-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #fda4af;
+            border-radius: 8px;
+            font-family: inherit;
+            margin-bottom: 15px;
+            resize: none;
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn-suspend { background: #fee2e2; color: #991b1b; }
+        .btn-activate { background: #dcfce7; color: #166534; }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <a href="index.html" class="logo" style="color: white; font-size: 1.5rem;">
+                <i class="fas fa-shoe-prints"></i> ShoeMall
+            </a>
+            <ul class="dash-nav">
+                <li><a href="seller-dashboard.html"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                <li><a href="seller-products.html"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="seller-orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="seller-payouts.html"><i class="fas fa-wallet"></i> Payouts</a></li>
+                <li><a href="seller-admin.html" class="active"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 40px;"><a href="seller-auth.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="dash-main">
+            <div class="admin-banner">
+                <div>
+                    <h1 style="margin: 0;">Global Admin Command Center</h1>
+                    <p style="margin: 5px 0 0; opacity: 0.9;">Total Platform Control | sammyharrison58@gmail.com</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.8rem; opacity: 0.8;">Platform Status</div>
+                    <div style="font-size: 1.2rem; font-weight: 800;"><i class="fas fa-check-circle"></i> SYSTEM ACTIVE</div>
+                </div>
+            </div>
+
+            <!-- Global Platform Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Main Store Revenue</span>
+                    <div class="stat-value" id="stat-store-revenue">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Seller Marketplace Revenue</span>
+                    <div class="stat-value" id="stat-market-revenue">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Your Platform Profit (5%)</span>
+                    <div class="stat-value" id="stat-platform-profit" style="color: #ef4444;">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Users (Customers)</span>
+                    <div class="stat-value" id="stat-total-users">0</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Sellers</span>
+                    <div class="stat-value" id="stat-total-sellers">0</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div style="display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid #f1f5f9; overflow-x: auto;">
+                    <button class="tab-btn active" onclick="switchTab('sellers')">All Sellers</button>
+                    <button class="tab-btn" onclick="switchTab('customers')">All Customers</button>
+                    <button class="tab-btn" onclick="switchTab('products')">All Products</button>
+                    <button class="tab-btn" onclick="switchTab('trades')">All Store Trades</button>
+                    <button class="tab-btn" onclick="switchTab('broadcast')">Broadcast</button>
+                </div>
+
+                <!-- Sellers Tab -->
+                <div id="sellersTab">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Seller Account</th><th>Products</th><th>Volume</th><th>Your Share</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="sellersListBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Customers Tab -->
+                <div id="customersTab" style="display: none;">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Name/Email</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="customersListBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Products Tab -->
+                <div id="productsTab" style="display: none;">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Product</th><th>Source</th><th>Price</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="productsListBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Trades Tab (Main Store Orders) -->
+                <div id="tradesTab" style="display: none;">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="tradesListBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Broadcast Tab -->
+                <div id="broadcastTab" style="display: none;">
+                    <div class="broadcast-area">
+                        <h3 style="margin-bottom: 15px; color: #991b1b;"><i class="fas fa-bullhorn"></i> System Announcement</h3>
+                        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px;">This message will appear at the top of the screen for ALL visitors on the main website.</p>
+                        <textarea id="broadcast-msg" class="broadcast-input" placeholder="Type your global announcement here..." rows="4"></textarea>
+                        <div style="display: flex; gap: 15px;">
+                            <button onclick="sendBroadcast()" class="btn-action" style="background: #ef4444; color: white; flex: 2;">Publish to Website</button>
+                            <button onclick="clearBroadcast()" class="btn-action" style="background: #64748b; color: white; flex: 1;">Clear Active</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SAMMY_EMAIL = "sammyharrison58@gmail.com";
+        const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
+
+        if (loggedInEmail !== SAMMY_EMAIL) { window.location.href = 'seller-dashboard.html'; }
+
+        // Data Sources
+        let mainOrders = JSON.parse(localStorage.getItem('shoemall_orders')) || [];
+        let allUsers = JSON.parse(localStorage.getItem('shoemall_all_users')) || [];
+        let trackedSellers = JSON.parse(localStorage.getItem('all_platform_sellers') || "[]").filter(e => e !== SAMMY_EMAIL);
+        let currentBroadcast = JSON.parse(localStorage.getItem('shoemall_broadcast')) || null;
+
+        function initAdmin() {
+            renderStats();
+            renderSellers();
+            renderCustomers();
+            renderProducts();
+            renderTrades();
+            if(currentBroadcast) document.getElementById('broadcast-msg').value = currentBroadcast;
+        }
+
+        function renderStats() {
+            const storeRevenue = mainOrders.reduce((sum, o) => sum + parseFloat(o.total.replace('$','')), 0);
+            
+            let marketRevenue = 15400; // Starting with Admin's own shop revenue
+            trackedSellers.forEach(email => {
+                const products = JSON.parse(localStorage.getItem(`products_${email}`) || "[]");
+                marketRevenue += products.reduce((sum, p) => sum + (p.price * 2), 0);
+            });
+
+            document.getElementById('stat-store-revenue').textContent = `$${storeRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('stat-market-revenue').textContent = `$${marketRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('stat-platform-profit').textContent = `$${(marketRevenue * 0.05).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('stat-total-users').textContent = allUsers.length;
+            document.getElementById('stat-total-sellers').textContent = trackedSellers.length + 1;
+        }
+
+        function renderSellers() {
+            const body = document.getElementById('sellersListBody');
+            body.innerHTML = `<tr><td><strong>${SAMMY_EMAIL} (Admin)</strong></td><td>2</td><td>$15,400.00</td><td>-</td><td><span class="status-pill" style="background:#dbeafe; color:#1e40af;">Official</span></td></tr>`;
+            
+            trackedSellers.forEach(email => {
+                const products = JSON.parse(localStorage.getItem(`products_${email}`) || "[]");
+                const volume = products.reduce((sum, p) => sum + (p.price * 2), 0);
+                body.innerHTML += `<tr><td>${email}</td><td>${products.length}</td><td>$${volume.toLocaleString()}</td><td style="color:#ef4444;font-weight:700;">$${(volume*0.05).toLocaleString()}</td><td><span class="status-pill" style="background:#f1f5f9;color:#475569;">Vendor</span></td></tr>`;
+            });
+        }
+
+        function renderCustomers() {
+            const body = document.getElementById('customersListBody');
+            body.innerHTML = '';
+            allUsers.forEach(u => {
+                const isAdmin = u.email === SAMMY_EMAIL;
+                const status = u.active !== false ? 'ACTIVE' : 'SUSPENDED';
+                const statusColor = u.active !== false ? '#10b981' : '#ef4444';
+                
+                body.innerHTML += `
+                    <tr>
+                        <td><strong>${u.email}</strong> ${isAdmin ? '<span style="font-size:10px; color:#ef4444;">[ADMIN]</span>' : ''}</td>
+                        <td>${isAdmin ? 'System Owner' : 'Customer'}</td>
+                        <td style="color:${statusColor}; font-weight:700;">${status}</td>
+                        <td>
+                            ${!isAdmin ? `<button onclick="toggleUser('${u.email}')" class="btn-action ${u.active !== false ? 'btn-suspend' : 'btn-activate'}">${u.active !== false ? 'Suspend' : 'Activate'}</button>` : '-'}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderProducts() {
+            const body = document.getElementById('productsListBody');
+            body.innerHTML = '';
+            
+            // Add Admin Products
+            const sammyProducts = [
+                { name: "Ultra-Light Marathon Sneakers", price: 45 },
+                { name: "Brown Leather Oxford", price: 120 }
+            ];
+            sammyProducts.forEach(p => {
+                body.innerHTML += `<tr><td>${p.name}</td><td>Official Store</td><td>$${p.price.toFixed(2)}</td><td><span class="status-pill" style="background:#dcfce7; color:#166534;">Active</span></td></tr>`;
+            });
+
+            // Add Vendor Products
+            trackedSellers.forEach(email => {
+                const products = JSON.parse(localStorage.getItem(`products_${email}`) || "[]");
+                products.forEach(p => {
+                    body.innerHTML += `<tr><td>${p.name}</td><td>${email}</td><td>$${p.price.toFixed(2)}</td><td><span class="status-pill" style="background:#f1f5f9; color:#475569;">Vendor</span></td></tr>`;
+                });
+            });
+        }
+
+        function renderTrades() {
+            const body = document.getElementById('tradesListBody');
+            body.innerHTML = mainOrders.map(o => `
+                <tr>
+                    <td>#${o.id}</td>
+                    <td>${o.user}</td>
+                    <td>${o.total}</td>
+                    <td><span class="status-pill" style="background:#dcfce7; color:#166534;">PAID</span></td>
+                </tr>
+            `).join('') || '<tr><td colspan="4" style="text-align:center; padding:20px;">No main store trades found.</td></tr>';
+        }
+
+        window.toggleUser = function(email) {
+            const user = allUsers.find(u => u.email === email);
+            if (user) {
+                user.active = user.active !== false ? false : true;
+                localStorage.setItem('shoemall_all_users', JSON.stringify(allUsers));
+                renderCustomers();
+            }
+        };
+
+        window.sendBroadcast = function() {
+            const msg = document.getElementById('broadcast-msg').value.trim();
+            if (!msg) return alert('Enter a message');
+            localStorage.setItem('shoemall_broadcast', JSON.stringify(msg));
+            alert('Broadcast Published to Main Website!');
+        };
+
+        window.clearBroadcast = function() {
+            localStorage.removeItem('shoemall_broadcast');
+            document.getElementById('broadcast-msg').value = '';
+            alert('Broadcast Cleared');
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`button[onclick="switchTab('${tab}')"]`).classList.add('active');
+            ['sellers', 'customers', 'products', 'trades', 'broadcast'].forEach(t => {
+                document.getElementById(`${t}Tab`).style.display = t === tab ? 'block' : 'none';
+            });
+        }
+
+        initAdmin();
+    </script>
+</body>
+</html>
