@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Orders | Seller Central | ShoeMall</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            flex-grow: 1;
+        }
+
+        .dash-sidebar {
+            background: #1e293b;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .dash-nav {
+            list-style: none;
+            margin-top: 40px;
+        }
+
+        .dash-nav li {
+            margin-bottom: 10px;
+        }
+
+        .dash-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .dash-nav a:hover, .dash-nav a.active {
+            background: #334155;
+            color: white;
+        }
+
+        .dash-main {
+            padding: 40px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .order-table th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .order-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-shipped { background: #dcfce7; color: #166534; }
+        .status-processing { background: #dbeafe; color: #1e40af; }
+        .status-delivered { background: #f3f4f6; color: #1f2937; }
+
+        .price-breakdown {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <a href="index.html" class="logo" style="color: white; font-size: 1.5rem;">
+                <i class="fas fa-shoe-prints"></i> ShoeMall
+            </a>
+            <ul class="dash-nav">
+                <li><a href="seller-dashboard.html"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                <li><a href="seller-products.html"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="seller-orders.html" class="active"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="seller-payouts.html"><i class="fas fa-wallet"></i> Payouts</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 40px;"><a href="seller-auth.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="dash-main">
+            <div class="dash-header" style="margin-bottom: 40px;">
+                <h1>Customer Orders</h1>
+                <p style="color: #64748b;">Manage and track all incoming sales orders.</p>
+            </div>
+
+            <div class="section-card">
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Product(s)</th>
+                            <th>Order Value</th>
+                            <th>Net Profit (95%)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 600;">#ORD-7721</td>
+                            <td>May 12, 2026</td>
+                            <td>John Doe</td>
+                            <td>Ultra-Light Marathon Sneakers (x1)</td>
+                            <td>$45.00</td>
+                            <td style="color: #10b981; font-weight: 700;">$42.75 <div class="price-breakdown">-$2.25 Fee</div></td>
+                            <td><span class="status-pill status-shipped">Shipped</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">#ORD-7690</td>
+                            <td>May 10, 2026</td>
+                            <td>Sarah Jenkins</td>
+                            <td>Brown Leather Oxford (x1)</td>
+                            <td>$120.00</td>
+                            <td style="color: #10b981; font-weight: 700;">$114.00 <div class="price-breakdown">-$6.00 Fee</div></td>
+                            <td><span class="status-pill status-delivered">Delivered</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">#ORD-7685</td>
+                            <td>May 10, 2026</td>
+                            <td>Michael Smith</td>
+                            <td>Ultra-Light Marathon Sneakers (x2)</td>
+                            <td>$90.00</td>
+                            <td style="color: #10b981; font-weight: 700;">$85.50 <div class="price-breakdown">-$4.50 Fee</div></td>
+                            <td><span class="status-pill status-processing">Processing</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

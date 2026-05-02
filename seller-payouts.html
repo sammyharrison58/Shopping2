@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payouts & Earnings | Seller Central | ShoeMall</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            flex-grow: 1;
+        }
+
+        .dash-sidebar {
+            background: #1e293b;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .dash-nav {
+            list-style: none;
+            margin-top: 40px;
+        }
+
+        .dash-nav li {
+            margin-bottom: 10px;
+        }
+
+        .dash-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .dash-nav a:hover, .dash-nav a.active {
+            background: #334155;
+            color: white;
+        }
+
+        .dash-main {
+            padding: 40px;
+        }
+
+        .payout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .btn-withdraw {
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-withdraw:hover {
+            background: #059669;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .method-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <a href="index.html" class="logo" style="color: white; font-size: 1.5rem;">
+                <i class="fas fa-shoe-prints"></i> ShoeMall
+            </a>
+            <ul class="dash-nav">
+                <li><a href="seller-dashboard.html"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                <li><a href="seller-products.html"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="seller-orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="seller-payouts.html" class="active"><i class="fas fa-wallet"></i> Payouts</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 40px;"><a href="seller-auth.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="dash-main">
+            <div class="balance-card">
+                <div>
+                    <div style="opacity: 0.8; font-size: 0.9rem;">Available for Withdrawal</div>
+                    <div class="balance-amount">$1,245.50</div>
+                    <div style="font-size: 0.8rem; opacity: 0.7;">Next scheduled payout: May 20, 2026</div>
+                </div>
+                <button class="btn-withdraw"><i class="fas fa-paper-plane"></i> Withdraw Funds</button>
+            </div>
+
+            <div class="payout-grid">
+                <div class="section-card">
+                    <h3 style="margin-bottom: 25px;">Payout History</h3>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>May 01, 2026</td>
+                                <td style="font-weight: 700;">$2,100.00</td>
+                                <td>
+                                    <div class="method-badge"><i class="fas fa-university"></i> Bank Transfer (...4421)</div>
+                                </td>
+                                <td style="color: #10b981; font-weight: 600;">Completed</td>
+                            </tr>
+                            <tr>
+                                <td>April 15, 2026</td>
+                                <td style="font-weight: 700;">$1,850.25</td>
+                                <td>
+                                    <div class="method-badge"><i class="fas fa-university"></i> Bank Transfer (...4421)</div>
+                                </td>
+                                <td style="color: #10b981; font-weight: 600;">Completed</td>
+                            </tr>
+                            <tr>
+                                <td>April 01, 2026</td>
+                                <td style="font-weight: 700;">$940.00</td>
+                                <td>
+                                    <div class="method-badge"><i class="fab fa-paypal"></i> PayPal (premiumkicks@...)</div>
+                                </td>
+                                <td style="color: #10b981; font-weight: 600;">Completed</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-card">
+                    <h3 style="margin-bottom: 25px;">Earning Insights</h3>
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="color: #64748b; font-size: 0.85rem;">Total Sales (Lifetime)</span>
+                            <span style="font-weight: 700;">$15,400.00</span>
+                        </div>
+                        <div style="height: 6px; background: #e2e8f0; border-radius: 3px;">
+                            <div style="width: 100%; height: 100%; background: #2563eb; border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="color: #64748b; font-size: 0.85rem;">Platform Fees (5%)</span>
+                            <span style="font-weight: 700; color: #ef4444;">$770.00</span>
+                        </div>
+                        <div style="height: 6px; background: #e2e8f0; border-radius: 3px;">
+                            <div style="width: 5%; height: 100%; background: #ef4444; border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center;">
+                        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Need help with your payouts?</p>
+                        <a href="Contacts.html" class="btn-primary" style="background: #1e293b; display: block;">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

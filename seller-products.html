@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Products | Seller Central | ShoeMall</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            flex-grow: 1;
+        }
+
+        .dash-sidebar {
+            background: #1e293b;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .dash-nav {
+            list-style: none;
+            margin-top: 40px;
+        }
+
+        .dash-nav li {
+            margin-bottom: 10px;
+        }
+
+        .dash-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .dash-nav a:hover, .dash-nav a.active {
+            background: #334155;
+            color: white;
+        }
+
+        .dash-main {
+            padding: 40px;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .product-table th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .product-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .product-img-sm {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f8fafc;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-out { background: #fee2e2; color: #991b1b; }
+
+        .search-filter-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <a href="index.html" class="logo" style="color: white; font-size: 1.5rem;">
+                <i class="fas fa-shoe-prints"></i> ShoeMall
+            </a>
+            <ul class="dash-nav">
+                <li><a href="seller-dashboard.html"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                <li><a href="seller-products.html" class="active"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="seller-orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="seller-payouts.html"><i class="fas fa-wallet"></i> Payouts</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 40px;"><a href="seller-auth.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="dash-main">
+            <div class="dash-header">
+                <h1>Product Inventory</h1>
+                <button class="btn-primary"><i class="fas fa-plus"></i> Add New Product</button>
+            </div>
+
+            <div class="search-filter-bar">
+                <input type="text" class="search-input" placeholder="Search products by name, SKU or ID...">
+                <select class="filter-select">
+                    <option>All Categories</option>
+                    <option>Sneakers</option>
+                    <option>Formal</option>
+                    <option>Boots</option>
+                </select>
+                <select class="filter-select">
+                    <option>Status: All</option>
+                    <option>Active</option>
+                    <option>Out of Stock</option>
+                </select>
+            </div>
+
+            <div class="section-card">
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Product Details</th>
+                            <th>Category</th>
+                            <th>Retail Price</th>
+                            <th>Net Payout (95%)</th>
+                            <th>Stock Level</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
+                                    <div>
+                                        <div style="font-weight: 700;">Ultra-Light Marathon Sneakers</div>
+                                        <div style="font-size: 0.75rem; color: #64748b;">SKU: SM-RUN-001</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Sneakers</td>
+                            <td>$45.00</td>
+                            <td style="color: #10b981; font-weight: 700;">$42.75</td>
+                            <td>24 units</td>
+                            <td><span class="status-pill status-active">Active</span></td>
+                            <td>
+                                <div style="display: flex; gap: 10px;">
+                                    <button style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
+                                    <button style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
+                                    <div>
+                                        <div style="font-weight: 700;">Brown Leather Oxford</div>
+                                        <div style="font-size: 0.75rem; color: #64748b;">SKU: SM-FRM-022</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Formal</td>
+                            <td>$120.00</td>
+                            <td style="color: #10b981; font-weight: 700;">$114.00</td>
+                            <td>12 units</td>
+                            <td><span class="status-pill status-active">Active</span></td>
+                            <td>
+                                <div style="display: flex; gap: 10px;">
+                                    <button style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
+                                    <button style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
+                                    <div>
+                                        <div style="font-weight: 700;">Air-Cloud Retro High-Tops</div>
+                                        <div style="font-size: 0.75rem; color: #64748b;">SKU: SM-SNK-089</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Sneakers</td>
+                            <td>$135.00</td>
+                            <td style="color: #10b981; font-weight: 700;">$128.25</td>
+                            <td>0 units</td>
+                            <td><span class="status-pill status-out">Sold Out</span></td>
+                            <td>
+                                <div style="display: flex; gap: 10px;">
+                                    <button style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
+                                    <button style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
