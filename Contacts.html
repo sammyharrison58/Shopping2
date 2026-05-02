@@ -34,6 +34,50 @@
             cursor: pointer;
             font-weight: 600;
             width: 100%;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.15s, opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .submit-btn:hover:not(:disabled) {
+            background: #b71c1c;
+            transform: translateY(-1px);
+        }
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .btn-spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .form-alert {
+            display: none;
+            padding: 14px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-alert.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        .form-alert.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
         }
 
         @media (max-width: 768px) {
@@ -83,18 +127,24 @@
         <div class="contact-grid">
             <section style="background: white; padding: 40px; border-radius: 8px; box-shadow: var(--shadow);">
                 <h2 style="margin-bottom: 30px;">Get in Touch</h2>
-                <form class="contact-form" action="https://formsubmit.co/sammyharrison58@gmail.com" method="POST">
-                    <!-- Security and routing options -->
+                <form class="contact-form" id="contactForm"
+                      action="https://formsubmit.co/sammyharrison58@gmail.com"
+                      method="POST">
+
+                    <!-- FormSubmit configuration -->
                     <input type="hidden" name="_subject" value="New Contact Inquiry from ShoeMall!">
-                    <input type="hidden" name="_captcha" value="false">
-                    
+                    <input type="hidden" name="_template" value="table">
+                    <!-- We cannot use a relative _next URL while testing locally -->
+
                     <label>Full Name</label>
                     <input type="text" name="name" placeholder="Your Name" required>
                     <label>Email Address</label>
                     <input type="email" name="email" placeholder="email@example.com" required>
                     <label>Message</label>
                     <textarea name="message" rows="5" placeholder="How can we help you?" required></textarea>
-                    <button type="submit" class="submit-btn">Send Message</button>
+                    <button type="submit" class="submit-btn" id="sendBtn">
+                        <span id="btnText">Send Message</span>
+                    </button>
                 </form>
             </section>
 

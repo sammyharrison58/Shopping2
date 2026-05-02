@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact Us - Harris Apex">
+    <title>▲ Contact | Harris Apex</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo"><i class="fa-solid fa-mountain logo-icon"></i>Harris <span>Apex</span></div>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href='/'>Home</a></li>
+                    <li><a href='/about'>About</a></li>
+                    <li><a href='/services'>Services</a></li>
+                    <li><a href='/team'>Team</a></li>
+                    <li><a class='active' href='/contact'>Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header aurora-bg">
+        <div class="hero-slider">
+            <div class="slider-item active"
+                style="background-image: url('https://images.unsplash.com/photo-1516387933999-ed3215a1dd17?auto=format&fit=crop&w=1920&q=80');">
+            </div>
+            <div class="slider-item"
+                style="background-image: url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=1920&q=80');">
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <h1>Get In <span>Touch</span></h1>
+            <p>Let's collaborate on your next big idea. We're here to help you reach your apex.</p>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="reveal" style="padding-bottom: 6rem;">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=1000&q=80"
+                        alt="Contact Us" class="contact-img">
+                    <div class="contact-image-overlay">
+                        <h3>Connect with the <span>Apex</span></h3>
+                        <p>Our experts are ready to turn your complex data into clear opportunities.</p>
+                    </div>
+                </div>
+                <div class="contact-form-wrapper">
+                    <form id="contact-form" action="https://formsubmit.co/ajax/sammyharrison58@gmail.com" method="POST">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input"
+                                placeholder="john@example.com" required>
+                        </div>
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_subject" value="New Project Inquiry from Harris Apex">
+                        <input type="text" name="_honey" style="display:none">
+                        <div class="form-group">
+                            <label for="service">Service Interest</label>
+                            <select id="service" name="service" class="form-input" style="cursor: pointer;">
+                                <option value="">Select a Service...</option>
+                                <option value="data">Data Science & Analytics</option>
+                                <option value="web">Web Development</option>
+                                <option value="app">App Development</option>
+                                <option value="design">Graphic & UI Design</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" class="form-input"
+                                placeholder="Tell us about your project..."></textarea>
+                        </div>
+                        <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%;">Send
+                            Message</button>
+                        <div id="form-status" style="margin-top: 1.5rem; text-align: center; font-weight: 500;"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Direct Contact Info -->
+            <div style="display: flex; justify-content: center; gap: 4rem; margin-top: 5rem; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div class="service-icon" style="margin: 0 auto 1rem auto;"><i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <h4>Email Us</h4>
+                    <p><a href="mailto:sammyharrison58@gmail.com"
+                            style="color: var(--text-muted);">sammyharrison58@gmail.com</a></p>
+                </div>
+                <div style="text-align: center;">
+                    <div class="service-icon" style="margin: 0 auto 1rem auto;"><i class="fa-solid fa-phone"></i></div>
+                    <h4>Call Us</h4>
+                    <p><a href="tel:0748082906" style="color: var(--text-muted);">0748082906</a></p>
+                </div>
+                <div style="text-align: center;">
+                    <div class="service-icon" style="margin: 0 auto 1rem auto;"><i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <h4>Visit Us</h4>
+                    <p style="color: var(--text-muted);">Tech Plaza, Silicon Avenue<br>Nairobi, Kenya</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Harris Apex. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
