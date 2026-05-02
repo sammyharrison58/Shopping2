@@ -232,7 +232,7 @@
 
         <main class="dash-main">
             <div class="dash-header">
-                <h1>Welcome back, Premium Kicks Hub!</h1>
+                <h1>Welcome back, <span id="sellerName">Seller</span>!</h1>
                 <div class="user-profile">
                     <span id="currentDate" style="color: #64748b; font-size: 0.9rem;"></span>
                 </div>
@@ -242,31 +242,31 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <span class="stat-label">Gross Revenue</span>
-                    <div class="stat-value">$4,250.00</div>
+                    <div class="stat-value">$0.00</div>
                     <div class="stat-footer">
-                        <i class="fas fa-arrow-up"></i> 12% from last month
+                        No sales yet this month
                     </div>
                 </div>
                 <div class="stat-card">
                     <span class="stat-label">Net Earnings (After 5% Comm.)</span>
-                    <div class="stat-value">$4,037.50</div>
-                    <div class="commission-note">- $212.50 Platform Fee</div>
+                    <div class="stat-value">$0.00</div>
+                    <div class="commission-note">Commission: $0.00</div>
                     <div class="stat-footer">
-                        <i class="fas fa-arrow-up"></i> 12% from last month
+                        No earnings yet
                     </div>
                 </div>
                 <div class="stat-card">
                     <span class="stat-label">Total Orders</span>
-                    <div class="stat-value">48</div>
+                    <div class="stat-value">0</div>
                     <div class="stat-footer">
-                        <i class="fas fa-arrow-up"></i> 5 new today
+                        Waiting for your first sale
                     </div>
                 </div>
                 <div class="stat-card">
                     <span class="stat-label">Store Rating</span>
-                    <div class="stat-value">4.9/5</div>
+                    <div class="stat-value">N/A</div>
                     <div class="stat-footer">
-                        <i class="fas fa-star" style="color: #fbbf24;"></i> Based on 124 reviews
+                        No reviews yet
                     </div>
                 </div>
             </div>
@@ -291,33 +291,12 @@
                             </tr>
                         </thead>
                         <tbody id="productTableBody">
+                            <!-- Products will appear here after upload -->
                             <tr>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
-                                        <strong>Ultra-Light Marathon Sneakers</strong>
-                                    </div>
+                                <td colspan="7" style="text-align: center; color: #64748b; padding: 40px;">
+                                    <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                    No products uploaded yet. Start selling today!
                                 </td>
-                                <td>Sneakers</td>
-                                <td>$45.00</td>
-                                <td style="color: #10b981; font-weight: 600;">$42.75</td>
-                                <td>24</td>
-                                <td><span class="status-pill status-active">Active</span></td>
-                                <td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #94a3b8;"></i></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                        <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
-                                        <strong>Brown Leather Oxford</strong>
-                                    </div>
-                                </td>
-                                <td>Formal Shoes</td>
-                                <td>$120.00</td>
-                                <td style="color: #10b981; font-weight: 600;">$114.00</td>
-                                <td>12</td>
-                                <td><span class="status-pill status-active">Active</span></td>
-                                <td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #94a3b8;"></i></td>
                             </tr>
                         </tbody>
                     </table>
@@ -363,19 +342,103 @@
     </div>
 
     <script>
-        // Set date
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-        });
+        // Data Configuration
+        const SAMMY_EMAIL = "sammyharrison58@gmail.com";
+        const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
+        
+        // Sample data for Sammy
+        const sammyData = {
+            name: "Sammy Harrison",
+            revenue: "$4,250.00",
+            net: "$4,037.50",
+            orders: "48",
+            rating: "4.9/5",
+            products: [
+                { name: "Ultra-Light Marathon Sneakers", cat: "Sneakers", price: 45, stock: 24, status: "Active", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100" },
+                { name: "Brown Leather Oxford", cat: "Formal Shoes", price: 120, stock: 12, status: "Active", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100" }
+            ]
+        };
+
+        // Initialize Dashboard
+        function initDashboard() {
+            // Set Name
+            document.getElementById('sellerName').textContent = (loggedInEmail === SAMMY_EMAIL) ? sammyData.name : loggedInEmail.split('@')[0];
+            
+            // Set Date
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+
+            if (loggedInEmail === SAMMY_EMAIL) {
+                loadSammyData();
+            } else {
+                loadUserData();
+            }
+        }
+
+        function loadSammyData() {
+            const stats = document.querySelectorAll('.stat-value');
+            stats[0].textContent = sammyData.revenue;
+            stats[1].textContent = sammyData.net;
+            stats[2].textContent = sammyData.orders;
+            stats[3].textContent = sammyData.rating;
+
+            const tbody = document.getElementById('productTableBody');
+            tbody.innerHTML = '';
+            sammyData.products.forEach(p => {
+                tbody.innerHTML += createProductRow(p);
+            });
+        }
+
+        function loadUserData() {
+            const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+            const tbody = document.getElementById('productTableBody');
+            
+            if (userProducts.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #64748b; padding: 40px;">
+                            <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            No products uploaded yet. Start selling today!
+                        </td>
+                    </tr>`;
+            } else {
+                tbody.innerHTML = '';
+                userProducts.forEach(p => {
+                    tbody.innerHTML += createProductRow(p);
+                });
+                // Mock stats for other users based on their products
+                const totalRev = userProducts.reduce((sum, p) => sum + (p.price * 2), 0); // Mock 2 sales per product
+                const stats = document.querySelectorAll('.stat-value');
+                stats[0].textContent = `$${totalRev.toFixed(2)}`;
+                stats[1].textContent = `$${(totalRev * 0.95).toFixed(2)}`;
+                stats[2].textContent = userProducts.length > 0 ? (userProducts.length * 2) : "0";
+            }
+        }
+
+        function createProductRow(p) {
+            const payout = p.price * 0.95;
+            const imgHtml = p.img ? `<img src="${p.img}" class="product-img-sm">` : `<div class="product-img-sm" style="display: flex; align-items: center; justify-content: center; background: #e2e8f0;"><i class="fas fa-image" style="color: #94a3b8;"></i></div>`;
+            return `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            ${imgHtml}
+                            <strong>${p.name}</strong>
+                        </div>
+                    </td>
+                    <td>${p.cat}</td>
+                    <td>$${p.price.toFixed(2)}</td>
+                    <td style="color: #10b981; font-weight: 600;">$${payout.toFixed(2)}</td>
+                    <td>${p.stock}</td>
+                    <td><span class="status-pill status-active">${p.status}</span></td>
+                    <td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #94a3b8;"></i></td>
+                </tr>`;
+        }
 
         // Modal Logic
-        function openModal() {
-            document.getElementById('uploadModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('uploadModal').style.display = 'none';
-        }
+        function openModal() { document.getElementById('uploadModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('uploadModal').style.display = 'none'; }
 
         function calculatePayout() {
             const price = parseFloat(document.getElementById('pPrice').value) || 0;
@@ -392,31 +455,27 @@
             e.preventDefault();
             const name = document.getElementById('pName').value;
             const price = parseFloat(document.getElementById('pPrice').value);
-            const payout = price * 0.95;
+            const category = this.querySelector('select').value;
 
-            const tbody = document.getElementById('productTableBody');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div class="product-img-sm" style="display: flex; align-items: center; justify-content: center; background: #e2e8f0;"><i class="fas fa-image" style="color: #94a3b8;"></i></div>
-                        <strong>${name}</strong>
-                    </div>
-                </td>
-                <td>Sneakers</td>
-                <td>$${price.toFixed(2)}</td>
-                <td style="color: #10b981; font-weight: 600;">$${payout.toFixed(2)}</td>
-                <td>0</td>
-                <td><span class="status-pill status-pending">Pending Review</span></td>
-                <td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #94a3b8;"></i></td>
-            `;
-            tbody.prepend(newRow);
+            const newProduct = { name, cat: category, price, stock: 0, status: "Pending", img: "" };
+
+            if (loggedInEmail !== SAMMY_EMAIL) {
+                const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+                userProducts.unshift(newProduct);
+                localStorage.setItem(`products_${loggedInEmail}`, JSON.stringify(userProducts));
+                loadUserData();
+            } else {
+                const tbody = document.getElementById('productTableBody');
+                tbody.insertAdjacentHTML('afterbegin', createProductRow(newProduct));
+            }
             
             closeModal();
-            alert('Product listed successfully and is now pending review!');
+            alert('Product listed successfully!');
             this.reset();
             calculatePayout();
         });
+
+        initDashboard();
     </script>
 </body>
 </html>

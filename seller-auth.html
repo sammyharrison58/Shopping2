@@ -254,16 +254,18 @@
     </footer>
 
     <script>
-        // Simple mock authentication for demonstration
+        // Store login info in localStorage for persistence
         document.getElementById('sellerLoginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // In a real app, this would verify credentials
+            const email = this.querySelector('input[type="email"]').value;
+            localStorage.setItem('seller_logged_in', email);
             window.location.href = 'seller-dashboard.html';
         });
 
         document.getElementById('sellerRegisterForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // In a real app, this would create an account
+            const email = this.querySelector('input[type="email"]').value;
+            localStorage.setItem('seller_logged_in', email);
             alert('Store created successfully! Welcome to ShoeMall.');
             window.location.href = 'seller-dashboard.html';
         });

@@ -138,31 +138,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="font-weight: 600;">#ORD-7721</td>
-                            <td>May 12, 2026</td>
-                            <td>John Doe</td>
-                            <td>Ultra-Light Marathon Sneakers (x1)</td>
-                            <td>$45.00</td>
-                            <td style="color: #10b981; font-weight: 700;">$42.75 <div class="price-breakdown">-$2.25 Fee</div></td>
-                            <td><span class="status-pill status-shipped">Shipped</span></td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: 600;">#ORD-7690</td>
-                            <td>May 10, 2026</td>
-                            <td>Sarah Jenkins</td>
-                            <td>Brown Leather Oxford (x1)</td>
-                            <td>$120.00</td>
-                            <td style="color: #10b981; font-weight: 700;">$114.00 <div class="price-breakdown">-$6.00 Fee</div></td>
-                            <td><span class="status-pill status-delivered">Delivered</span></td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: 600;">#ORD-7685</td>
-                            <td>May 10, 2026</td>
-                            <td>Michael Smith</td>
-                            <td>Ultra-Light Marathon Sneakers (x2)</td>
-                            <td>$90.00</td>
-                            <td style="color: #10b981; font-weight: 700;">$85.50 <div class="price-breakdown">-$4.50 Fee</div></td>
-                            <td><span class="status-pill status-processing">Processing</span></td>
+                            <td colspan="7" style="text-align: center; color: #64748b; padding: 60px;">
+                                <i class="fas fa-shopping-bag" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                                No orders yet.<br>
+                                <span style="font-size: 0.85rem;">When customers buy your products, they will appear here.</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -175,5 +155,54 @@
             <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
         </div>
     </footer>
+    <script>
+        const SAMMY_EMAIL = "sammyharrison58@gmail.com";
+        const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
+
+        const sammyOrders = [
+            { id: "#ORD-7721", date: "May 12, 2026", customer: "John Doe", items: "Ultra-Light Marathon Sneakers (x1)", value: 45, status: "Shipped" },
+            { id: "#ORD-7690", date: "May 10, 2026", customer: "Sarah Jenkins", items: "Brown Leather Oxford (x1)", value: 120, status: "Delivered" },
+            { id: "#ORD-7685", date: "May 10, 2026", customer: "Michael Smith", items: "Ultra-Light Marathon Sneakers (x2)", value: 90, status: "Processing" }
+        ];
+
+        function initOrders() {
+            const tbody = document.querySelector('.order-table tbody');
+            if (loggedInEmail === SAMMY_EMAIL) {
+                renderOrders(sammyOrders);
+            } else {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #64748b; padding: 60px;">
+                            <i class="fas fa-shopping-bag" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                            No orders yet.<br>
+                            <span style="font-size: 0.85rem;">When customers buy your products, they will appear here.</span>
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        function renderOrders(orders) {
+            const tbody = document.querySelector('.order-table tbody');
+            tbody.innerHTML = '';
+            orders.forEach(o => {
+                const profit = o.value * 0.95;
+                const fee = o.value * 0.05;
+                const statusClass = `status-${o.status.toLowerCase()}`;
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 600;">${o.id}</td>
+                        <td>${o.date}</td>
+                        <td>${o.customer}</td>
+                        <td>${o.items}</td>
+                        <td>$${o.value.toFixed(2)}</td>
+                        <td style="color: #10b981; font-weight: 700;">$${profit.toFixed(2)} <div class="price-breakdown">-$${fee.toFixed(2)} Fee</div></td>
+                        <td><span class="status-pill ${statusClass}">${o.status}</span></td>
+                    </tr>`;
+            });
+        }
+
+        initOrders();
+    </script>
 </body>
 </html>

@@ -201,69 +201,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 15px;">
-                                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
-                                    <div>
-                                        <div style="font-weight: 700;">Ultra-Light Marathon Sneakers</div>
-                                        <div style="font-size: 0.75rem; color: #64748b;">SKU: SM-RUN-001</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Sneakers</td>
-                            <td>$45.00</td>
-                            <td style="color: #10b981; font-weight: 700;">$42.75</td>
-                            <td>24 units</td>
-                            <td><span class="status-pill status-active">Active</span></td>
-                            <td>
-                                <div style="display: flex; gap: 10px;">
-                                    <button style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
-                                    <button style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 15px;">
-                                    <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
-                                    <div>
-                                        <div style="font-weight: 700;">Brown Leather Oxford</div>
-                                        <div style="font-size: 0.75rem; color: #64748b;">SKU: SM-FRM-022</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Formal</td>
-                            <td>$120.00</td>
-                            <td style="color: #10b981; font-weight: 700;">$114.00</td>
-                            <td>12 units</td>
-                            <td><span class="status-pill status-active">Active</span></td>
-                            <td>
-                                <div style="display: flex; gap: 10px;">
-                                    <button style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
-                                    <button style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 15px;">
-                                    <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
-                                    <div>
-                                        <div style="font-weight: 700;">Air-Cloud Retro High-Tops</div>
-                                        <div style="font-size: 0.75rem; color: #64748b;">SKU: SM-SNK-089</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Sneakers</td>
-                            <td>$135.00</td>
-                            <td style="color: #10b981; font-weight: 700;">$128.25</td>
-                            <td>0 units</td>
-                            <td><span class="status-pill status-out">Sold Out</span></td>
-                            <td>
-                                <div style="display: flex; gap: 10px;">
-                                    <button style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
-                                    <button style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
-                                </div>
+                            <td colspan="7" style="text-align: center; color: #64748b; padding: 60px;">
+                                <i class="fas fa-boxes-stacked" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+                                Your inventory is currently empty.<br>
+                                <span style="font-size: 0.85rem;">Upload your first product to start reaching customers.</span>
                             </td>
                         </tr>
                     </tbody>
@@ -277,5 +218,72 @@
             <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
         </div>
     </footer>
+    <script>
+        const SAMMY_EMAIL = "sammyharrison58@gmail.com";
+        const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
+
+        const sammyProducts = [
+            { name: "Ultra-Light Marathon Sneakers", sku: "SM-RUN-001", cat: "Sneakers", price: 45, stock: 24, status: "Active", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100" },
+            { name: "Brown Leather Oxford", sku: "SM-FRM-022", cat: "Formal", price: 120, stock: 12, status: "Active", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100" },
+            { name: "Air-Cloud Retro High-Tops", sku: "SM-SNK-089", cat: "Sneakers", price: 135, stock: 0, status: "Sold Out", img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=100" }
+        ];
+
+        function initProducts() {
+            const tbody = document.querySelector('.product-table tbody');
+            if (loggedInEmail === SAMMY_EMAIL) {
+                renderProducts(sammyProducts);
+            } else {
+                const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+                if (userProducts.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: #64748b; padding: 60px;">
+                                <i class="fas fa-boxes-stacked" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+                                Your inventory is currently empty.<br>
+                                <span style="font-size: 0.85rem;">Upload your first product to start reaching customers.</span>
+                            </td>
+                        </tr>`;
+                } else {
+                    renderProducts(userProducts);
+                }
+            }
+        }
+
+        function renderProducts(products) {
+            const tbody = document.querySelector('.product-table tbody');
+            tbody.innerHTML = '';
+            products.forEach(p => {
+                const payout = p.price * 0.95;
+                const statusClass = p.status === 'Active' ? 'status-active' : 'status-out';
+                const imgHtml = p.img ? `<img src="${p.img}" class="product-img-sm">` : `<div class="product-img-sm" style="display: flex; align-items: center; justify-content: center; background: #e2e8f0;"><i class="fas fa-image" style="color: #94a3b8;"></i></div>`;
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                ${imgHtml}
+                                <div>
+                                    <div style="font-weight: 700;">${p.name}</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;">SKU: ${p.sku || 'N/A'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${p.cat}</td>
+                        <td>$${p.price.toFixed(2)}</td>
+                        <td style="color: #10b981; font-weight: 700;">$${payout.toFixed(2)}</td>
+                        <td>${p.stock} units</td>
+                        <td><span class="status-pill ${statusClass}">${p.status}</span></td>
+                        <td>
+                            <div style="display: flex; gap: 10px;">
+                                <button style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
+                                <button style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        initProducts();
+    </script>
 </body>
 </html>
