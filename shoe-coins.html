@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoe Coins | Rewards Program – ShoeMall</title>
+    <meta name="description" content="Earn Shoe Coins with every purchase at ShoeMall. Get 5 coins for every 10 items bought and redeem a $10 voucher for every 20 items. Shop more, save more!">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ── Shoe Coins Page Styles ── */
+        :root {
+            --coin-gold: #FFB800;
+            --coin-gold-dark: #e0a200;
+            --coin-gold-light: #FFD966;
+            --coin-bg: #0d0d0d;
+            --coin-card: #161616;
+            --coin-border: rgba(255, 184, 0, 0.18);
+            --primary-red: #e8001d;
+        }
+
+        body {
+            background: var(--coin-bg);
+            color: #f0f0f0;
+        }
+
+        /* ── Hero ── */
+        .sc-hero {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
+            padding: 80px 20px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid var(--coin-border);
+        }
+
+        .sc-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,184,0,0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* floating coin particles */
+        .sc-hero .coin-particles span {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.08;
+            animation: floatCoin 6s ease-in-out infinite;
+        }
+        .sc-hero .coin-particles span:nth-child(1) { left:5%;  top:20%; animation-delay:0s;   font-size:3rem; }
+        .sc-hero .coin-particles span:nth-child(2) { left:15%; top:70%; animation-delay:1s; }
+        .sc-hero .coin-particles span:nth-child(3) { left:80%; top:15%; animation-delay:2s;   font-size:2.5rem; }
+        .sc-hero .coin-particles span:nth-child(4) { left:90%; top:65%; animation-delay:0.5s; font-size:1.5rem; }
+        .sc-hero .coin-particles span:nth-child(5) { left:50%; top:10%; animation-delay:3s;   font-size:1.8rem; }
+        @keyframes floatCoin {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50%       { transform: translateY(-20px) rotate(15deg); }
+        }
+
+        .sc-coin-icon {
+            width: 110px;
+            height: 110px;
+            background: radial-gradient(circle at 35% 35%, var(--coin-gold-light), var(--coin-gold), var(--coin-gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 28px;
+            box-shadow: 0 0 60px rgba(255,184,0,0.5), 0 4px 20px rgba(0,0,0,0.6);
+            position: relative;
+            z-index: 1;
+            animation: pulseCoin 3s ease-in-out infinite;
+        }
+        @keyframes pulseCoin {
+            0%, 100% { box-shadow: 0 0 60px rgba(255,184,0,0.5), 0 4px 20px rgba(0,0,0,0.6); }
+            50%       { box-shadow: 0 0 90px rgba(255,184,0,0.7), 0 4px 30px rgba(0,0,0,0.6); }
+        }
+
+        .sc-hero h1 {
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--coin-gold-light), var(--coin-gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sc-hero p {
+            font-size: 1.15rem;
+            color: #bbb;
+            max-width: 560px;
+            margin: 0 auto 30px;
+            position: relative;
+            z-index: 1;
+            line-height: 1.7;
+        }
+
+        .sc-hero-badges {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sc-badge {
+            background: rgba(255,184,0,0.12);
+            border: 1px solid rgba(255,184,0,0.35);
+            color: var(--coin-gold);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* ── My Coins Tracker (demo widget) ── */
+        .sc-tracker-wrap {
+            max-width: 1100px;
+            margin: -40px auto 0;
+            padding: 0 20px 50px;
+        }
+
+        .sc-tracker {
+            background: linear-gradient(135deg, #1a1200, #201800);
+            border: 1px solid var(--coin-border);
+            border-radius: 20px;
+            padding: 36px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+
+        .sc-tracker-balance {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .sc-tracker-balance .coin-ico {
+            background: linear-gradient(135deg, var(--coin-gold-light), var(--coin-gold));
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 0 20px rgba(255,184,0,0.4);
+            flex-shrink: 0;
+        }
+
+        .sc-tracker-balance .label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .sc-tracker-balance .amount {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--coin-gold);
+        }
+
+        .sc-tracker-balance .amount span {
+            font-size: 1rem;
+            color: #888;
+            font-weight: 400;
+        }
+
+        .sc-progress-block {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .sc-progress-block .prog-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .sc-progress-block .prog-label span {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .sc-progress-block .prog-label strong {
+            font-size: 0.9rem;
+            color: var(--coin-gold);
+        }
+
+        .sc-progress-bar {
+            height: 12px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .sc-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--coin-gold-dark), var(--coin-gold-light));
+            border-radius: 50px;
+            transition: width 1.5s ease;
+        }
+
+        .sc-progress-hint {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .sc-tracker-cta .btn-gold {
+            background: linear-gradient(135deg, var(--coin-gold), var(--coin-gold-dark));
+            color: #000;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(255,184,0,0.3);
+        }
+
+        .sc-tracker-cta .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255,184,0,0.5);
+        }
+
+        /* ── Section Wrapper ── */
+        .sc-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 20px 60px;
+        }
+
+        .sc-section-title {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .sc-section-title .eyebrow {
+            display: inline-block;
+            background: rgba(255,184,0,0.12);
+            border: 1px solid rgba(255,184,0,0.3);
+            color: var(--coin-gold);
+            padding: 5px 16px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .sc-section-title h2 {
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .sc-section-title p {
+            color: #888;
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ── How It Works ── */
+        .sc-how-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 24px;
+        }
+
+        .sc-step-card {
+            background: var(--coin-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 36px 28px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .sc-step-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255,184,0,0.35);
+            box-shadow: 0 12px 40px rgba(255,184,0,0.12);
+        }
+
+        .sc-step-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,184,0,0.12);
+            border: 1px solid rgba(255,184,0,0.3);
+            color: var(--coin-gold);
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+        }
+
+        .sc-step-icon {
+            font-size: 2.6rem;
+            margin-bottom: 16px;
+        }
+
+        .sc-step-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .sc-step-card p {
+            font-size: 0.88rem;
+            color: #888;
+            line-height: 1.65;
+        }
+
+        /* ── Earn & Redeem Feature Cards ── */
+        .sc-feature-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        @media (max-width: 720px) {
+            .sc-feature-row { grid-template-columns: 1fr; }
+        }
+
+        .sc-feat-card {
+            border-radius: 20px;
+            padding: 40px 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sc-feat-card.earn {
+            background: linear-gradient(135deg, #1a1200, #261a00);
+            border: 1px solid rgba(255,184,0,0.25);
+        }
+
+        .sc-feat-card.redeem {
+            background: linear-gradient(135deg, #0c1a00, #112600);
+            border: 1px solid rgba(100,200,0,0.2);
+        }
+
+        .sc-feat-card::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            opacity: 0.08;
+        }
+
+        .sc-feat-card.earn::before { background: var(--coin-gold); }
+        .sc-feat-card.redeem::before { background: #7ed321; }
+
+        .sc-feat-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sc-feat-card h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .sc-feat-card.earn h3 { color: var(--coin-gold); }
+        .sc-feat-card.redeem h3 { color: #a5d96a; }
+
+        .sc-feat-card p {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        .sc-rule-box {
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .sc-feat-card.earn .sc-rule-box {
+            background: rgba(255,184,0,0.1);
+            border: 1px solid rgba(255,184,0,0.22);
+        }
+
+        .sc-feat-card.redeem .sc-rule-box {
+            background: rgba(125,210,0,0.08);
+            border: 1px solid rgba(125,210,0,0.2);
+        }
+
+        .sc-rule-box .rule-num {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .sc-feat-card.earn .rule-num { color: var(--coin-gold); }
+        .sc-feat-card.redeem .rule-num { color: #a5d96a; }
+
+        .sc-rule-box .rule-text {
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.55;
+        }
+
+        .sc-rule-box .rule-text strong { color: #fff; display: block; }
+
+        /* ── Rewards Table ── */
+        .sc-table-wrap {
+            background: var(--coin-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .sc-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .sc-table thead {
+            background: linear-gradient(90deg, rgba(255,184,0,0.15), rgba(255,184,0,0.06));
+        }
+
+        .sc-table th {
+            padding: 18px 24px;
+            text-align: left;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--coin-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .sc-table td {
+            padding: 18px 24px;
+            font-size: 0.95rem;
+            color: #ccc;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sc-table tr:hover td {
+            background: rgba(255,184,0,0.04);
+        }
+
+        .sc-table td .tag {
+            background: rgba(255,184,0,0.12);
+            border: 1px solid rgba(255,184,0,0.3);
+            color: var(--coin-gold);
+            padding: 3px 12px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .sc-table td .tag.green {
+            background: rgba(100,200,0,0.1);
+            border-color: rgba(100,200,0,0.25);
+            color: #a5d96a;
+        }
+
+        /* ── FAQ ── */
+        .sc-faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sc-faq-item {
+            background: var(--coin-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .sc-faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 22px 26px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            transition: color 0.2s;
+        }
+
+        .sc-faq-question:hover { color: var(--coin-gold); }
+
+        .sc-faq-question .faq-ico {
+            color: var(--coin-gold);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: transform 0.3s;
+        }
+
+        .sc-faq-item.open .sc-faq-question .faq-ico {
+            transform: rotate(45deg);
+        }
+
+        .sc-faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s;
+            padding: 0 26px;
+            font-size: 0.92rem;
+            color: #888;
+            line-height: 1.7;
+        }
+
+        .sc-faq-item.open .sc-faq-answer {
+            max-height: 300px;
+            padding: 0 26px 22px;
+        }
+
+        /* ── CTA Banner ── */
+        .sc-cta-banner {
+            background: linear-gradient(135deg, #1a1200 0%, #0d0d0d 50%, #1a1200 100%);
+            border: 1px solid rgba(255,184,0,0.2);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sc-cta-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(255,184,0,0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .sc-cta-banner h2 {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sc-cta-banner h2 em {
+            font-style: normal;
+            color: var(--coin-gold);
+        }
+
+        .sc-cta-banner p {
+            color: #888;
+            font-size: 1rem;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sc-cta-banner .btn-gold {
+            background: linear-gradient(135deg, var(--coin-gold), var(--coin-gold-dark));
+            color: #000;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.25s, box-shadow 0.25s;
+            box-shadow: 0 4px 24px rgba(255,184,0,0.35);
+            position: relative;
+            z-index: 1;
+        }
+
+        .sc-cta-banner .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 36px rgba(255,184,0,0.55);
+        }
+
+        /* ── Terms notice ── */
+        .sc-terms {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .sc-terms a { color: #888; text-decoration: underline; }
+
+        /* ── divider ── */
+        .sc-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,184,0,0.15), transparent);
+            margin: 0 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Utility Bar -->
+    <div class="top-bar">
+        <span>Welcome to ShoeMall!</span>
+        <a href="#">Sell on ShoeMall</a>
+        <a href="About us.html">Help Center</a>
+        <a href="shoe-coins.html" style="color: var(--coin-gold, #FFB800); font-weight: 700;">Shoe Coins</a>
+        <a href="Contacts.html">Contact Us</a>
+    </div>
+
+    <!-- Main Header -->
+    <header>
+        <a href="index.html" class="logo">
+            <i class="fas fa-shoe-prints"></i> ShoeMall
+        </a>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search for brands, styles, or sizes...">
+            <button class="search-btn">Search</button>
+        </div>
+
+        <div class="header-actions">
+            <a href="#" class="action-item">
+                <i class="far fa-user"></i>
+                <span>Account</span>
+            </a>
+            <a href="#" class="action-item cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+                <span>Cart</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════ HERO ═══════════ -->
+    <section class="sc-hero" id="shoe-coins-hero">
+        <div class="coin-particles">
+            <span>🪙</span><span>🪙</span><span>🪙</span><span>🪙</span><span>🪙</span>
+        </div>
+        <div class="sc-coin-icon">🪙</div>
+        <h1>Shoe Coins</h1>
+        <p>Shop more, earn more! Every pair you buy puts coins in your pocket. Stack up coins and turn them into real savings on your next haul.</p>
+        <div class="sc-hero-badges">
+            <span class="sc-badge">🎁 Free to Join</span>
+            <span class="sc-badge">⚡ Instant Coins</span>
+            <span class="sc-badge">💳 $10 Vouchers</span>
+            <span class="sc-badge">🔄 Never Expire</span>
+        </div>
+    </section>
+
+    <!-- ═════════════════════════ MY COINS TRACKER (demo) ═════════ -->
+    <div class="sc-tracker-wrap">
+        <div class="sc-tracker">
+            <div class="sc-tracker-balance">
+                <div class="coin-ico">🪙</div>
+                <div>
+                    <div class="label">My Shoe Coins</div>
+                    <div class="amount" id="coin-count">0 <span>coins</span></div>
+                </div>
+            </div>
+
+            <div class="sc-progress-block">
+                <div class="prog-label">
+                    <span>Progress to next reward</span>
+                    <strong id="prog-text">0 / 20 items</strong>
+                </div>
+                <div class="sc-progress-bar">
+                    <div class="sc-progress-fill" id="prog-fill" style="width: 0%;"></div>
+                </div>
+                <div class="sc-progress-hint" id="prog-hint">Buy 20 items to unlock your $10 voucher 🎉</div>
+            </div>
+
+            <div class="sc-tracker-cta">
+                <a href="index.html" class="btn-gold">Shop &amp; Earn Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ HOW IT WORKS ════════════════════════ -->
+    <section class="sc-section" id="how-it-works">
+        <div class="sc-section-title">
+            <span class="eyebrow">Simple &amp; Rewarding</span>
+            <h2>How Shoe Coins Work</h2>
+            <p>Four easy steps from shopping to savings — no complicated rules.</p>
+        </div>
+
+        <div class="sc-how-grid">
+            <div class="sc-step-card">
+                <div class="sc-step-num">01</div>
+                <div class="sc-step-icon">👟</div>
+                <h3>Shop &amp; Buy</h3>
+                <p>Browse our huge range of sneakers, boots, heels, sandals &amp; more. Add items to cart and complete your purchase.</p>
+            </div>
+            <div class="sc-step-card">
+                <div class="sc-step-num">02</div>
+                <div class="sc-step-icon">🪙</div>
+                <h3>Earn Coins</h3>
+                <p>For every <strong style="color:#FFB800;">10 items</strong> you buy, you automatically earn <strong style="color:#FFB800;">5 Shoe Coins</strong> — credited instantly to your account.</p>
+            </div>
+            <div class="sc-step-card">
+                <div class="sc-step-num">03</div>
+                <div class="sc-step-icon">📦</div>
+                <h3>Stack Your Purchases</h3>
+                <p>Keep shopping! Every 20 items purchased triggers a milestone reward. Your count and coins are tracked automatically.</p>
+            </div>
+            <div class="sc-step-card">
+                <div class="sc-step-num">04</div>
+                <div class="sc-step-icon">💳</div>
+                <h3>Unlock Vouchers</h3>
+                <p>Reach <strong style="color:#FFB800;">20 items</strong> bought and instantly receive a <strong style="color:#a5d96a;">$10 voucher</strong> to use on your next order. Stackable!</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="sc-divider"></div>
+
+    <!-- ════════════════ EARN & REDEEM FEATURE CARDS ═════════════════ -->
+    <section class="sc-section" id="earn-redeem">
+        <div class="sc-section-title">
+            <span class="eyebrow">Your Rewards Breakdown</span>
+            <h2>Earn &amp; Redeem</h2>
+            <p>Two clear ways your loyalty is rewarded at ShoeMall.</p>
+        </div>
+
+        <div class="sc-feature-row">
+            <!-- EARN CARD -->
+            <div class="sc-feat-card earn">
+                <span class="sc-feat-icon">🪙</span>
+                <h3>Earning Shoe Coins</h3>
+                <p>Every time you hit 10 items purchased across any orders on ShoeMall, we drop 5 Shoe Coins straight into your wallet. The more you shop, the faster they pile up.</p>
+                <div class="sc-rule-box">
+                    <div class="rule-num">5</div>
+                    <div class="rule-text">
+                        <strong>Coins Earned</strong>
+                        for every 10 items you buy — applied automatically.
+                    </div>
+                </div>
+            </div>
+
+            <!-- REDEEM CARD -->
+            <div class="sc-feat-card redeem">
+                <span class="sc-feat-icon">🎟️</span>
+                <h3>Redeeming Vouchers</h3>
+                <p>When your cumulative purchases hit every 20 items bought, a $10 voucher is issued to your account. Apply it at checkout on any future order — no minimum spend required.</p>
+                <div class="sc-rule-box">
+                    <div class="rule-num">$10</div>
+                    <div class="rule-text">
+                        <strong>Voucher Unlocked</strong>
+                        for every 20 items purchased — redeemable at checkout.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sc-divider"></div>
+
+    <!-- ═══════════════════ REWARDS TABLE ════════════════════════════ -->
+    <section class="sc-section" id="rewards-table">
+        <div class="sc-section-title">
+            <span class="eyebrow">At a Glance</span>
+            <h2>Rewards Schedule</h2>
+            <p>Here's exactly what you earn as you keep shopping.</p>
+        </div>
+
+        <div class="sc-table-wrap">
+            <table class="sc-table">
+                <thead>
+                    <tr>
+                        <th>Items Purchased</th>
+                        <th>Shoe Coins Earned</th>
+                        <th>Voucher Reward</th>
+                        <th>Milestone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1 – 9 items</td>
+                        <td>Building up…</td>
+                        <td>—</td>
+                        <td>Keep going!</td>
+                    </tr>
+                    <tr>
+                        <td>10 items</td>
+                        <td><span class="tag">+5 Coins 🪙</span></td>
+                        <td>—</td>
+                        <td>First coin milestone 🎉</td>
+                    </tr>
+                    <tr>
+                        <td>20 items</td>
+                        <td><span class="tag">+5 Coins 🪙</span></td>
+                        <td><span class="tag green">$10 Voucher 🎟️</span></td>
+                        <td>First voucher unlocked!</td>
+                    </tr>
+                    <tr>
+                        <td>30 items</td>
+                        <td><span class="tag">+5 Coins 🪙</span></td>
+                        <td>—</td>
+                        <td>15 coins total</td>
+                    </tr>
+                    <tr>
+                        <td>40 items</td>
+                        <td><span class="tag">+5 Coins 🪙</span></td>
+                        <td><span class="tag green">$10 Voucher 🎟️</span></td>
+                        <td>2nd voucher unlocked!</td>
+                    </tr>
+                    <tr>
+                        <td>50 items</td>
+                        <td><span class="tag">+5 Coins 🪙</span></td>
+                        <td>—</td>
+                        <td>25 coins total</td>
+                    </tr>
+                    <tr>
+                        <td>Every +10 items</td>
+                        <td><span class="tag">+5 Coins 🪙</span></td>
+                        <td><span class="tag green">$10 per 20 items 🎟️</span></td>
+                        <td>Rewards keep stacking!</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="sc-divider"></div>
+
+    <!-- ═══════════════════════ FAQ ══════════════════════════════════ -->
+    <section class="sc-section" id="faq">
+        <div class="sc-section-title">
+            <span class="eyebrow">Got Questions?</span>
+            <h2>Frequently Asked Questions</h2>
+        </div>
+
+        <div class="sc-faq-list">
+            <div class="sc-faq-item" id="faq-1">
+                <button class="sc-faq-question" onclick="toggleFaq('faq-1')">
+                    <span>How are Shoe Coins tracked?</span>
+                    <i class="fas fa-plus faq-ico"></i>
+                </button>
+                <div class="sc-faq-answer">
+                    Shoe Coins are tracked automatically against your ShoeMall account. Every completed purchase contributes to your item count. Once you hit every 10th item, 5 coins are added to your balance instantly. You can always check your current coin balance and item count at the top of this page.
+                </div>
+            </div>
+            <div class="sc-faq-item" id="faq-2">
+                <button class="sc-faq-question" onclick="toggleFaq('faq-2')">
+                    <span>Do Shoe Coins expire?</span>
+                    <i class="fas fa-plus faq-ico"></i>
+                </button>
+                <div class="sc-faq-answer">
+                    No! Your Shoe Coins never expire as long as your account remains active. Shop at your own pace — your coins will be waiting for you whenever you're ready to redeem.
+                </div>
+            </div>
+            <div class="sc-faq-item" id="faq-3">
+                <button class="sc-faq-question" onclick="toggleFaq('faq-3')">
+                    <span>Can I use my $10 voucher on any product?</span>
+                    <i class="fas fa-plus faq-ico"></i>
+                </button>
+                <div class="sc-faq-answer">
+                    Yes! The $10 voucher can be applied to any order on ShoeMall with no minimum spend required. Simply select "Apply Voucher" at checkout, and the discount will be deducted automatically from your order total.
+                </div>
+            </div>
+            <div class="sc-faq-item" id="faq-4">
+                <button class="sc-faq-question" onclick="toggleFaq('faq-4')">
+                    <span>Do returned or cancelled items affect my coin count?</span>
+                    <i class="fas fa-plus faq-ico"></i>
+                </button>
+                <div class="sc-faq-answer">
+                    Yes. If you return an item or an order is cancelled, those items will be deducted from your purchase count and any coins earned from them will be removed from your balance. This ensures the program remains fair for all shoppers.
+                </div>
+            </div>
+            <div class="sc-faq-item" id="faq-5">
+                <button class="sc-faq-question" onclick="toggleFaq('faq-5')">
+                    <span>Can I stack multiple vouchers on one order?</span>
+                    <i class="fas fa-plus faq-ico"></i>
+                </button>
+                <div class="sc-faq-answer">
+                    You can accumulate multiple $10 vouchers in your wallet and use them one at a time per order. Each voucher is applied separately, so buy 40 items and you can use your two vouchers on two separate future orders.
+                </div>
+            </div>
+            <div class="sc-faq-item" id="faq-6">
+                <button class="sc-faq-question" onclick="toggleFaq('faq-6')">
+                    <span>Is there a limit to how many coins I can earn?</span>
+                    <i class="fas fa-plus faq-ico"></i>
+                </button>
+                <div class="sc-faq-answer">
+                    There is no cap on Shoe Coins or vouchers. The more you shop, the more you earn — endlessly. Happy shopping!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sc-divider"></div>
+
+    <!-- ═══════════════════════ CTA BANNER ═══════════════════════════ -->
+    <section class="sc-section">
+        <div class="sc-cta-banner">
+            <h2>Start Earning <em>Shoe Coins</em> Today</h2>
+            <p>Every purchase brings you closer to free money. Shop now and watch your coins grow.</p>
+            <a href="index.html" class="btn-gold">🛍️ Shop &amp; Earn Now</a>
+        </div>
+        <p class="sc-terms">
+            Shoe Coins are subject to ShoeMall's <a href="#">Terms &amp; Conditions</a> and <a href="#">Rewards Policy</a>. Vouchers are issued automatically upon reaching the 20-item milestone. ShoeMall reserves the right to amend programme rules with prior notice.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>About ShoeMall</h4>
+                <ul class="footer-links">
+                    <li><a href="About us.html">Our Story</a></li>
+                    <li><a href="#">Terms &amp; Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Career</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                    <li><a href="Contacts.html">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Shop Categories</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Men's Shoes</a></li>
+                    <li><a href="#">Women's Shoes</a></li>
+                    <li><a href="#">Kids' Shoes</a></li>
+                    <li><a href="#">Accessories</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect With Us</h4>
+                <div class="social-links" style="display: flex; gap: 15px; font-size: 1.5rem; margin-top: 10px;">
+                    <a href="#" style="color: #FFF;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: #FFF;"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2026 ShoeMall Africa. All Rights Reserved. Built with ❤️ for Shoe Lovers.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ── FAQ accordion ──
+        function toggleFaq(id) {
+            const item = document.getElementById(id);
+            item.classList.toggle('open');
+        }
+
+        // ── Coin tracker demo (reads from localStorage if available) ──
+        (function () {
+            let itemsBought = parseInt(localStorage.getItem('sc_items_bought') || '0', 10);
+            const coinsEarned = Math.floor(itemsBought / 10) * 5;
+            const vouchersEarned = Math.floor(itemsBought / 20);
+
+            // animate coin count
+            const coinEl  = document.getElementById('coin-count');
+            const fillEl  = document.getElementById('prog-fill');
+            const textEl  = document.getElementById('prog-text');
+            const hintEl  = document.getElementById('prog-hint');
+
+            if (coinEl) {
+                coinEl.innerHTML = `${coinsEarned} <span>coins</span>`;
+            }
+
+            // progress to next voucher milestone
+            const nextMilestone = (Math.floor(itemsBought / 20) + 1) * 20;
+            const progressPct   = Math.min((itemsBought % 20) / 20 * 100, 100);
+
+            if (fillEl)  fillEl.style.width = progressPct + '%';
+            if (textEl)  textEl.textContent  = `${itemsBought} / ${nextMilestone} items`;
+            if (hintEl) {
+                const remaining = nextMilestone - itemsBought;
+                hintEl.textContent = remaining > 0
+                    ? `Buy ${remaining} more item${remaining > 1 ? 's' : ''} to unlock a $10 voucher 🎉`
+                    : 'You earned a $10 voucher! 🎉 Check your account.';
+            }
+        })();
+    </script>
+
+</body>
+
+</html>
