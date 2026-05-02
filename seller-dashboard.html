@@ -322,13 +322,30 @@
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <select style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                        <select id="pCat" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
                             <option>Sneakers</option>
                             <option>Boots</option>
                             <option>Formal Shoes</option>
                             <option>Sandals</option>
+                            <option>Kids' Shoes</option>
+                            <option>Women's Shoes</option>
                         </select>
                     </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Stock Quantity</label>
+                        <input type="number" id="pStock" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Image URL (Optional)</label>
+                        <input type="url" id="pImg" placeholder="https://images.unsplash.com/...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Or Upload Image (Max 5MB)</label>
+                    <input type="file" id="pImageFile" accept="image/*" style="width: 100%; padding: 8px; border: 1px dashed #cbd5e1; border-radius: 8px; cursor: pointer;">
+                    <small id="fileSizeError" style="color: #ef4444; display: none;">File size exceeds 5MB limit.</small>
                 </div>
                 <div id="payoutPreview" style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
                     Your Payout (95%): <strong style="color: #10b981;">$0.00</strong>
@@ -344,19 +361,6 @@
         const SAMMY_EMAIL = "sammyharrison58@gmail.com";
         const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
 
-        // Sample data for Sammy
-        const sammyData = {
-            name: "Sammy Harrison",
-            revenue: "$4,250.00",
-            net: "$4,037.50",
-            orders: "48",
-            rating: "4.9/5",
-            products: [
-                { name: "Ultra-Light Marathon Sneakers", cat: "Sneakers", price: 45, stock: 24, status: "Active", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100" },
-                { name: "Brown Leather Oxford", cat: "Formal Shoes", price: 120, stock: 12, status: "Active", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100" }
-            ]
-        };
-
         // Initialize Dashboard
         function initDashboard() {
             const isAdmin = (loggedInEmail === SAMMY_EMAIL);
@@ -367,37 +371,30 @@
             }
 
             // Set Name
-            document.getElementById('sellerName').textContent = (loggedInEmail === SAMMY_EMAIL) ? sammyData.name : loggedInEmail.split('@')[0];
+            document.getElementById('sellerName').textContent = (loggedInEmail === SAMMY_EMAIL) ? "Sammy Harrison" : loggedInEmail.split('@')[0];
 
             // Set Date
             document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
             });
 
-            if (loggedInEmail === SAMMY_EMAIL) {
-                loadSammyData();
-            } else {
-                loadUserData();
-            }
+            loadUserData();
         }
 
-        function loadSammyData() {
-            const stats = document.querySelectorAll('.stat-value');
-            stats[0].textContent = sammyData.revenue;
-            stats[1].textContent = sammyData.net;
-            stats[2].textContent = sammyData.orders;
-            stats[3].textContent = sammyData.rating;
-
-            const tbody = document.getElementById('productTableBody');
-            tbody.innerHTML = '';
-            sammyData.products.forEach(p => {
-                tbody.innerHTML += createProductRow(p);
-            });
-        }
 
         function loadUserData() {
             const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
             const tbody = document.getElementById('productTableBody');
+
+            // If Sammy and localStorage is empty, seed with initial data
+            if (loggedInEmail === SAMMY_EMAIL && userProducts.length === 0) {
+                const initialProducts = [
+                    { id: '1', name: "Ultra-Light Marathon Sneakers", cat: "Sneakers", price: 45, stock: 24, status: "Active", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100", approved: true, sku: "SM-RUN-001" },
+                    { id: '2', name: "Brown Leather Oxford", cat: "Formal Shoes", price: 120, stock: 12, status: "Active", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100", approved: true, sku: "SM-FRM-022" }
+                ];
+                localStorage.setItem(`products_${SAMMY_EMAIL}`, JSON.stringify(initialProducts));
+                userProducts.push(...initialProducts);
+            }
 
             if (userProducts.length === 0) {
                 tbody.innerHTML = `
@@ -407,43 +404,100 @@
                             No products uploaded yet. Start selling today!
                         </td>
                     </tr>`;
+                
+                // Reset stats
+                const stats = document.querySelectorAll('.stat-value');
+                stats[0].textContent = "$0.00";
+                stats[1].textContent = "$0.00";
+                stats[2].textContent = "0";
             } else {
                 tbody.innerHTML = '';
                 userProducts.forEach(p => {
                     tbody.innerHTML += createProductRow(p);
                 });
-                // Mock stats for other users based on their products
+                
+                // Calculate stats based on products
                 const totalRev = userProducts.reduce((sum, p) => sum + (p.price * 2), 0); // Mock 2 sales per product
                 const stats = document.querySelectorAll('.stat-value');
                 stats[0].textContent = `$${totalRev.toFixed(2)}`;
                 stats[1].textContent = `$${(totalRev * 0.95).toFixed(2)}`;
-                stats[2].textContent = userProducts.length > 0 ? (userProducts.length * 2) : "0";
+                stats[2].textContent = (userProducts.length * 2).toString();
+                
+                if (loggedInEmail === SAMMY_EMAIL) {
+                    stats[3].textContent = "4.9/5";
+                }
             }
         }
 
         function createProductRow(p) {
             const payout = p.price * 0.95;
             const imgHtml = p.img ? `<img src="${p.img}" class="product-img-sm">` : `<div class="product-img-sm" style="display: flex; align-items: center; justify-content: center; background: #e2e8f0;"><i class="fas fa-image" style="color: #94a3b8;"></i></div>`;
+            const statusClass = p.status === 'Active' ? 'status-active' : 'status-pending';
+            const approvedText = p.approved ? '' : ' <span style="font-size: 0.65rem; color: #f59e0b;">(Pending)</span>';
+            
             return `
                 <tr>
                     <td>
                         <div style="display: flex; align-items: center; gap: 15px;">
                             ${imgHtml}
-                            <strong>${p.name}</strong>
+                            <div>
+                                <strong>${p.name}</strong>${approvedText}
+                            </div>
                         </div>
                     </td>
                     <td>${p.cat}</td>
                     <td>$${p.price.toFixed(2)}</td>
                     <td style="color: #10b981; font-weight: 600;">$${payout.toFixed(2)}</td>
                     <td>${p.stock}</td>
-                    <td><span class="status-pill status-active">${p.status}</span></td>
-                    <td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #94a3b8;"></i></td>
+                    <td><span class="status-pill ${statusClass}">${p.status}</span></td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="editProduct('${p.id}')" style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteProduct('${p.id}')" style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
                 </tr>`;
         }
 
         // Modal Logic
-        function openModal() { document.getElementById('uploadModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('uploadModal').style.display = 'none'; }
+        let editingProductId = null;
+        window.openModal = function() { 
+            editingProductId = null;
+            document.getElementById('uploadModal').style.display = 'flex'; 
+            document.getElementById('productUploadForm').reset();
+            document.getElementById('payoutPreview').innerHTML = `
+                Your Payout (95%): <strong style="color: #10b981;">$0.00</strong>
+                <div style="color: #64748b; font-size: 0.8rem;">ShoeMall Commission (5%): $0.00</div>
+            `;
+            document.querySelector('.modal-header h3').textContent = 'Upload New Product';
+        };
+        window.closeModal = function() { document.getElementById('uploadModal').style.display = 'none'; };
+
+        window.editProduct = function(id) {
+            const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+            const product = userProducts.find(p => p.id === id);
+            if (!product) return;
+
+            editingProductId = id;
+            document.getElementById('pName').value = product.name;
+            document.getElementById('pCat').value = product.cat;
+            document.getElementById('pPrice').value = product.price;
+            document.getElementById('pStock').value = product.stock;
+            document.getElementById('pImg').value = product.img && !product.img.startsWith('data:') ? product.img : '';
+            document.getElementById('pImageFile').value = '';
+
+            calculatePayout();
+            document.querySelector('.modal-header h3').textContent = 'Edit Product';
+            document.getElementById('uploadModal').style.display = 'flex';
+        };
+
+        window.deleteProduct = function(id) {
+            if (!confirm('Delete this product?')) return;
+            let userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+            userProducts = userProducts.filter(p => p.id !== id);
+            localStorage.setItem(`products_${loggedInEmail}`, JSON.stringify(userProducts));
+            loadUserData();
+        };
 
         function calculatePayout() {
             const price = parseFloat(document.getElementById('pPrice').value) || 0;
@@ -456,29 +510,85 @@
         }
 
         // Handle Product Submission
-        document.getElementById('productUploadForm').addEventListener('submit', function(e) {
+        document.getElementById('productUploadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const name = document.getElementById('pName').value;
             const price = parseFloat(document.getElementById('pPrice').value);
-            const category = this.querySelector('select').value;
+            const category = document.getElementById('pCat').value;
+            const stock = parseInt(document.getElementById('pStock').value);
+            const imgUrl = document.getElementById('pImg').value;
+            const imageFile = document.getElementById('pImageFile').files[0];
+            const sizeError = document.getElementById('fileSizeError');
 
-            const newProduct = { name, cat: category, price, stock: 0, status: "Pending", img: "" };
+            let finalImg = imgUrl;
 
-            if (loggedInEmail !== SAMMY_EMAIL) {
-                const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
-                userProducts.unshift(newProduct);
-                localStorage.setItem(`products_${loggedInEmail}`, JSON.stringify(userProducts));
-                loadUserData();
-            } else {
-                const tbody = document.getElementById('productTableBody');
-                tbody.insertAdjacentHTML('afterbegin', createProductRow(newProduct));
+            // Handle File Upload
+            if (imageFile) {
+                if (imageFile.size > 5 * 1024 * 1024) {
+                    sizeError.style.display = 'block';
+                    return;
+                }
+                sizeError.style.display = 'none';
+                finalImg = await convertToBase64(imageFile);
             }
 
+            if (!finalImg) {
+                alert('Please provide either an image URL or upload a file.');
+                return;
+            }
+
+            let userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+
+            if (editingProductId) {
+                const index = userProducts.findIndex(p => p.id === editingProductId);
+                if (index !== -1) {
+                    userProducts[index] = { 
+                        ...userProducts[index], 
+                        name, price, cat: category, stock, img: finalImg, 
+                        status: stock > 0 ? "Active" : "Out of Stock",
+                        approved: (loggedInEmail === SAMMY_EMAIL)
+                    };
+                }
+            } else {
+                const newProduct = { 
+                    id: Date.now().toString(),
+                    name, 
+                    cat: category, 
+                    price, 
+                    stock, 
+                    img: finalImg,
+                    status: stock > 0 ? "Active" : "Out of Stock",
+                    approved: (loggedInEmail === SAMMY_EMAIL),
+                    seller: loggedInEmail,
+                    sku: "SM-" + Math.random().toString(36).substr(2, 6).toUpperCase()
+                };
+                userProducts.unshift(newProduct);
+            }
+
+            try {
+                localStorage.setItem(`products_${loggedInEmail}`, JSON.stringify(userProducts));
+            } catch (err) {
+                alert('Storage limit reached! Try a smaller image or a URL instead.');
+                return;
+            }
+            
             closeModal();
-            alert('Product listed successfully!');
-            this.reset();
-            calculatePayout();
+            if (loggedInEmail === SAMMY_EMAIL) {
+                alert(editingProductId ? 'Product updated!' : 'Product listed successfully!');
+            } else {
+                alert(editingProductId ? 'Product updated!' : 'Product submitted! It will appear on the store once approved by the admin.');
+            }
+            loadUserData();
         });
+
+        function convertToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
 
         initDashboard();
     </script>

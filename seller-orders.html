@@ -171,11 +171,32 @@
             if (isAdmin) {
                 if(document.getElementById('adminSidebarLink')) document.getElementById('adminSidebarLink').style.display = 'block';
             }
-            const tbody = document.querySelector('.order-table tbody');
+            
+            const globalOrders = JSON.parse(localStorage.getItem('shoemall_orders') || "[]");
+            let myOrders = [];
 
-            if (loggedInEmail === SAMMY_EMAIL) {
-                renderOrders(sammyOrders);
-            } else {
+            // Filter global orders for items belonging to this seller
+            globalOrders.forEach(o => {
+                const sellerItems = o.items.filter(item => item.seller === loggedInEmail);
+                if (sellerItems.length > 0) {
+                    myOrders.push({
+                        id: `#ORD-${o.id}`,
+                        date: o.date,
+                        customer: o.user,
+                        items: sellerItems.map(i => `${i.title} (x${i.quantity})`).join(', '),
+                        value: sellerItems.reduce((sum, i) => sum + (parseFloat(i.price.replace('$','')) * i.quantity), 0),
+                        status: "Processing" // Default status for new marketplace orders
+                    });
+                }
+            });
+
+            // Include demo data for Sammy if no real orders yet
+            if (loggedInEmail === SAMMY_EMAIL && myOrders.length === 0) {
+                myOrders = sammyOrders;
+            }
+
+            if (myOrders.length === 0) {
+                const tbody = document.querySelector('.order-table tbody');
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align: center; color: #64748b; padding: 60px;">
@@ -184,6 +205,8 @@
                             <span style="font-size: 0.85rem;">When customers buy your products, they will appear here.</span>
                         </td>
                     </tr>`;
+            } else {
+                renderOrders(myOrders);
             }
         }
 

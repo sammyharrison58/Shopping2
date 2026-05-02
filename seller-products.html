@@ -146,6 +146,58 @@
             border-radius: 8px;
             background: white;
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .status-pending { background: #fef9c3; color: #854d0e; }
+        .status-approved { background: #dcfce7; color: #166534; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
     </style>
 </head>
 
@@ -169,21 +221,25 @@
         <main class="dash-main">
             <div class="dash-header">
                 <h1>Product Inventory</h1>
-                <button class="btn-primary"><i class="fas fa-plus"></i> Add New Product</button>
+                <button class="btn-primary" onclick="openAddModal()"><i class="fas fa-plus"></i> Add New Product</button>
             </div>
 
             <div class="search-filter-bar">
-                <input type="text" class="search-input" placeholder="Search products by name, SKU or ID...">
-                <select class="filter-select">
+                <input type="text" class="search-input" id="searchProducts" placeholder="Search products by name, SKU or ID...">
+                <select class="filter-select" id="filterCat">
                     <option>All Categories</option>
                     <option>Sneakers</option>
                     <option>Formal</option>
                     <option>Boots</option>
+                    <option>Sandals</option>
+                    <option>Kids' Shoes</option>
+                    <option>Women's Shoes</option>
                 </select>
-                <select class="filter-select">
+                <select class="filter-select" id="filterStatus">
                     <option>Status: All</option>
                     <option>Active</option>
                     <option>Out of Stock</option>
+                    <option>Pending Approval</option>
                 </select>
             </div>
 
@@ -202,7 +258,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="7" style="text-align: center; color: #64748b; padding: 60px;">
+                            <td colspan="8" style="text-align: center; color: #64748b; padding: 60px;">
                                 <i class="fas fa-boxes-stacked" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
                                 Your inventory is currently empty.<br>
                                 <span style="font-size: 0.85rem;">Upload your first product to start reaching customers.</span>
@@ -214,6 +270,54 @@
         </main>
     </div>
 
+    <!-- Add Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Product</h2>
+                <button onclick="closeAddModal()" style="background:none; border:none; font-size: 1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="pName" required placeholder="e.g. Premium Leather Boots">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="pCat">
+                        <option>Sneakers</option>
+                        <option>Formal</option>
+                        <option>Boots</option>
+                        <option>Sandals</option>
+                        <option>Kids' Shoes</option>
+                        <option>Women's Shoes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Retail Price ($)</label>
+                    <input type="number" id="pPrice" step="0.01" required placeholder="49.99">
+                </div>
+                <div class="form-group">
+                    <label>Stock Quantity</label>
+                    <input type="number" id="pStock" required placeholder="50">
+                </div>
+                <div class="form-group">
+                    <label>Image URL (Optional)</label>
+                    <input type="url" id="pImg" placeholder="https://images.unsplash.com/...">
+                </div>
+                <div class="form-group">
+                    <label>Or Upload Image (Max 5MB)</label>
+                    <input type="file" id="pImageFile" accept="image/*" style="width: 100%; padding: 8px; border: 1px dashed #cbd5e1; border-radius: 6px; cursor: pointer;">
+                    <small id="fileSizeError" style="color: #ef4444; display: none;">File size exceeds 5MB limit.</small>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn-primary" style="background: #64748b; flex: 1;" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" style="flex: 2;">Submit for Approval</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <footer>
         <div class="copyright">
             <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
@@ -223,11 +327,117 @@
         const SAMMY_EMAIL = "sammyharrison58@gmail.com";
         const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
 
-        const sammyProducts = [
-            { name: "Ultra-Light Marathon Sneakers", sku: "SM-RUN-001", cat: "Sneakers", price: 45, stock: 24, status: "Active", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100" },
-            { name: "Brown Leather Oxford", sku: "SM-FRM-022", cat: "Formal", price: 120, stock: 12, status: "Active", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100" },
-            { name: "Air-Cloud Retro High-Tops", sku: "SM-SNK-089", cat: "Sneakers", price: 135, stock: 0, status: "Sold Out", img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=100" }
-        ];
+        // Modal Logic
+        let editingProductId = null;
+        window.openAddModal = function() { 
+            editingProductId = null;
+            document.getElementById('productModal').style.display = 'flex'; 
+            document.getElementById('addProductForm').reset();
+            document.querySelector('.modal-header h2').textContent = 'Add New Product';
+        };
+        window.closeAddModal = function() { document.getElementById('productModal').style.display = 'none'; };
+
+        window.editProduct = function(id) {
+            const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+            const product = userProducts.find(p => p.id === id);
+            if (!product) return;
+
+            editingProductId = id;
+            document.getElementById('pName').value = product.name;
+            document.getElementById('pCat').value = product.cat;
+            document.getElementById('pPrice').value = product.price;
+            document.getElementById('pStock').value = product.stock;
+            document.getElementById('pImg').value = product.img && !product.img.startsWith('data:') ? product.img : '';
+            document.getElementById('pImageFile').value = '';
+
+            document.querySelector('.modal-header h2').textContent = 'Edit Product';
+            document.getElementById('productModal').style.display = 'flex';
+        };
+
+        window.deleteProduct = function(id) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+            let userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+            userProducts = userProducts.filter(p => p.id !== id);
+            localStorage.setItem(`products_${loggedInEmail}`, JSON.stringify(userProducts));
+            initProducts();
+        };
+
+        document.getElementById('addProductForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const cat = document.getElementById('pCat').value;
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const stock = parseInt(document.getElementById('pStock').value);
+            const imgUrl = document.getElementById('pImg').value;
+            const imageFile = document.getElementById('pImageFile').files[0];
+            const sizeError = document.getElementById('fileSizeError');
+
+            let finalImg = imgUrl;
+
+            // Handle File Upload
+            if (imageFile) {
+                if (imageFile.size > 5 * 1024 * 1024) {
+                    sizeError.style.display = 'block';
+                    return;
+                }
+                sizeError.style.display = 'none';
+                finalImg = await convertToBase64(imageFile);
+            }
+
+            if (!finalImg) {
+                alert('Please provide either an image URL or upload a file.');
+                return;
+            }
+
+            const productData = {
+                name, cat, price, stock, img: finalImg,
+                status: stock > 0 ? "Active" : "Out of Stock"
+            };
+
+            let userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+
+            if (editingProductId) {
+                const index = userProducts.findIndex(p => p.id === editingProductId);
+                if (index !== -1) {
+                    userProducts[index] = { ...userProducts[index], ...productData };
+                    userProducts[index].approved = (loggedInEmail === SAMMY_EMAIL);
+                }
+            } else {
+                const newProduct = {
+                    id: Date.now().toString(),
+                    ...productData,
+                    approved: (loggedInEmail === SAMMY_EMAIL),
+                    seller: loggedInEmail,
+                    sku: "SM-" + Math.random().toString(36).substr(2, 6).toUpperCase()
+                };
+                userProducts.unshift(newProduct);
+            }
+
+            try {
+                localStorage.setItem(`products_${loggedInEmail}`, JSON.stringify(userProducts));
+            } catch (err) {
+                alert('Storage limit reached! Try a smaller image or a URL instead.');
+                return;
+            }
+            
+            if (loggedInEmail === SAMMY_EMAIL) {
+                alert(editingProductId ? "Product updated!" : "Product listed successfully!");
+            } else {
+                alert(editingProductId ? "Product updated!" : "Product submitted for approval!");
+            }
+            
+            closeAddModal();
+            initProducts();
+        });
+
+        function convertToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
 
         function initProducts() {
             // Show Admin Link if applicable
@@ -236,24 +446,52 @@
             }
 
             const tbody = document.querySelector('.product-table tbody');
-            if (loggedInEmail === SAMMY_EMAIL) {
-                renderProducts(sammyProducts);
+            let products = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+            
+            // Seed if empty for Sammy
+            if (loggedInEmail === SAMMY_EMAIL && products.length === 0) {
+                products = [
+                    { id: '1', name: "Ultra-Light Marathon Sneakers", sku: "SM-RUN-001", cat: "Sneakers", price: 45, stock: 24, status: "Active", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100", approved: true },
+                    { id: '2', name: "Brown Leather Oxford", sku: "SM-FRM-022", cat: "Formal", price: 120, stock: 12, status: "Active", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100", approved: true },
+                    { id: '3', name: "Air-Cloud Retro High-Tops", sku: "SM-SNK-089", cat: "Sneakers", price: 135, stock: 0, status: "Out of Stock", img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=100", approved: true }
+                ];
+                localStorage.setItem(`products_${SAMMY_EMAIL}`, JSON.stringify(products));
+            }
+
+            // Apply Filters
+            const searchQuery = document.getElementById('searchProducts').value.toLowerCase();
+            const catFilter = document.getElementById('filterCat').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+
+            products = products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery) || (p.sku && p.sku.toLowerCase().includes(searchQuery));
+                const matchesCat = catFilter === 'All Categories' || p.cat === catFilter;
+                
+                let matchesStatus = true;
+                if (statusFilter === 'Active') matchesStatus = p.status === 'Active' && p.approved;
+                else if (statusFilter === 'Out of Stock') matchesStatus = p.status === 'Out of Stock';
+                else if (statusFilter === 'Pending Approval') matchesStatus = !p.approved;
+
+                return matchesSearch && matchesCat && matchesStatus;
+            });
+
+            if (products.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: #64748b; padding: 60px;">
+                            <i class="fas fa-boxes-stacked" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+                            No products found matching your filters.<br>
+                        </td>
+                    </tr>`;
             } else {
-                const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
-                if (userProducts.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="7" style="text-align: center; color: #64748b; padding: 60px;">
-                                <i class="fas fa-boxes-stacked" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
-                                Your inventory is currently empty.<br>
-                                <span style="font-size: 0.85rem;">Upload your first product to start reaching customers.</span>
-                            </td>
-                        </tr>`;
-                } else {
-                    renderProducts(userProducts);
-                }
+                renderProducts(products);
             }
         }
+
+        // Add event listeners for filters
+        document.getElementById('searchProducts').oninput = initProducts;
+        document.getElementById('filterCat').onchange = initProducts;
+        document.getElementById('filterStatus').onchange = initProducts;
 
         function renderProducts(products) {
             const tbody = document.querySelector('.product-table tbody');
@@ -261,6 +499,8 @@
             products.forEach(p => {
                 const payout = p.price * 0.95;
                 const statusClass = p.status === 'Active' ? 'status-active' : 'status-out';
+                const approvedClass = p.approved ? 'status-approved' : 'status-pending';
+                const approvedText = p.approved ? 'Approved' : 'Pending Approval';
                 const imgHtml = p.img ? `<img src="${p.img}" class="product-img-sm">` : `<div class="product-img-sm" style="display: flex; align-items: center; justify-content: center; background: #e2e8f0;"><i class="fas fa-image" style="color: #94a3b8;"></i></div>`;
 
                 tbody.innerHTML += `
@@ -279,10 +519,11 @@
                         <td style="color: #10b981; font-weight: 700;">$${payout.toFixed(2)}</td>
                         <td>${p.stock} units</td>
                         <td><span class="status-pill ${statusClass}">${p.status}</span></td>
+                        <td><span class="status-pill ${approvedClass}">${approvedText}</span></td>
                         <td>
                             <div style="display: flex; gap: 10px;">
-                                <button style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
-                                <button style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                                <button onclick="editProduct('${p.id}')" style="border:none; background:none; color:#2563eb; cursor:pointer;"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteProduct('${p.id}')" style="border:none; background:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>`;

@@ -260,7 +260,7 @@
                 <div id="productsTab" style="display: none;">
                     <table class="data-table">
                         <thead>
-                            <tr><th>Product</th><th>Source</th><th>Price</th><th>Status</th></tr>
+                            <tr><th>Product</th><th>Source</th><th>Price</th><th>Status</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="productsListBody"></tbody>
                     </table>
@@ -363,23 +363,61 @@
             const body = document.getElementById('productsListBody');
             body.innerHTML = '';
 
-            // Add Admin Products
-            const sammyProducts = [
-                { name: "Ultra-Light Marathon Sneakers", price: 45 },
-                { name: "Brown Leather Oxford", price: 120 }
-            ];
-            sammyProducts.forEach(p => {
-                body.innerHTML += `<tr><td>${p.name}</td><td>Official Store</td><td>$${p.price.toFixed(2)}</td><td><span class="status-pill" style="background:#dcfce7; color:#166534;">Active</span></td></tr>`;
-            });
-
-            // Add Vendor Products
-            trackedSellers.forEach(email => {
+            const allSellers = JSON.parse(localStorage.getItem('all_platform_sellers') || "[]");
+            
+            allSellers.forEach(email => {
                 const products = JSON.parse(localStorage.getItem(`products_${email}`) || "[]");
+                const isOfficial = email === SAMMY_EMAIL;
+
                 products.forEach(p => {
-                    body.innerHTML += `<tr><td>${p.name}</td><td>${email}</td><td>$${p.price.toFixed(2)}</td><td><span class="status-pill" style="background:#f1f5f9; color:#475569;">Vendor</span></td></tr>`;
+                    const statusText = p.approved ? 'Approved' : 'Pending Approval';
+                    const statusColor = p.approved ? '#166534' : '#854d0e';
+                    const statusBg = p.approved ? '#dcfce7' : '#fef9c3';
+
+                    body.innerHTML += `
+                        <tr>
+                            <td>${p.name}</td>
+                            <td>${isOfficial ? 'Official Store' : email}</td>
+                            <td>$${p.price.toFixed(2)}</td>
+                            <td><span class="status-pill" style="background:${statusBg}; color:${statusColor};">${statusText}</span></td>
+                            <td>
+                                ${!isOfficial ? 
+                                    (!p.approved ? 
+                                        `<button onclick="approveProduct('${email}', '${p.id}')" class="btn-action btn-activate">Approve</button>` : 
+                                        `<button onclick="rejectProduct('${email}', '${p.id}')" class="btn-action btn-suspend">De-list</button>`) 
+                                    : '-'}
+                            </td>
+                        </tr>`;
                 });
             });
+
+            // If no products at all
+            if (body.innerHTML === '') {
+                body.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No marketplace products found.</td></tr>';
+            }
         }
+
+        window.approveProduct = function(sellerEmail, productId) {
+            let products = JSON.parse(localStorage.getItem(`products_${sellerEmail}`) || "[]");
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                product.approved = true;
+                localStorage.setItem(`products_${sellerEmail}`, JSON.stringify(products));
+                alert(`Product "${product.name}" approved!`);
+                renderProducts();
+            }
+        };
+
+        window.rejectProduct = function(sellerEmail, productId) {
+            let products = JSON.parse(localStorage.getItem(`products_${sellerEmail}`) || "[]");
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                product.approved = false;
+                localStorage.setItem(`products_${sellerEmail}`, JSON.stringify(products));
+                alert(`Product "${product.name}" de-listed.`);
+                renderProducts();
+            }
+        };
 
         function renderTrades() {
             const body = document.getElementById('tradesListBody');

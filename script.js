@@ -8,6 +8,7 @@ let currentBroadcast = JSON.parse(localStorage.getItem('shoemall_broadcast')) ||
 
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
+    loadMarketplaceProducts();
     initFilter();
     initSearch();
     initAddToCart();
@@ -16,6 +17,41 @@ document.addEventListener('DOMContentLoaded', () => {
     checkBroadcast();
     initProductModal();
 });
+
+function loadMarketplaceProducts() {
+    const grid = document.querySelector('.product-grid');
+    if (!grid) return;
+
+    const sellers = JSON.parse(localStorage.getItem('all_platform_sellers') || "[]");
+    let allApprovedProducts = [];
+
+    sellers.forEach(email => {
+        const products = JSON.parse(localStorage.getItem(`products_${email}`) || "[]");
+        const approved = products.filter(p => p.approved === true);
+        allApprovedProducts = allApprovedProducts.concat(approved);
+    });
+
+    allApprovedProducts.forEach(p => {
+        const productHTML = `
+            <div class="product-card" data-id="${p.id}" data-category="${p.cat.toLowerCase()}" data-seller="${email}">
+                <a href="#" class="product-link">
+                    <div class="product-image">
+                        <span class="discount-tag">MARKETPLACE</span>
+                        <img src="${p.img || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800'}" alt="${p.name}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${p.name}</h3>
+                        <div class="price-container">
+                            <span class="current-price">$${p.price.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </a>
+                <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            </div>
+        `;
+        grid.insertAdjacentHTML('beforeend', productHTML);
+    });
+}
 
 function checkBroadcast() {
     if (!currentBroadcast) return;
@@ -353,6 +389,7 @@ function initAddToCart() {
         const card = btn.closest('.product-card');
         const product = {
             id: card.dataset.id,
+            seller: card.dataset.seller || ADMIN_EMAIL,
             title: card.querySelector('.product-title').textContent,
             price: card.querySelector('.current-price').textContent,
             image: card.querySelector('img').src,
@@ -569,6 +606,7 @@ function initProductModal() {
         modalCartBtn.onclick = () => {
             const product = {
                 id: data.id,
+                seller: card.dataset.seller || ADMIN_EMAIL,
                 title: data.title,
                 price: data.price,
                 image: data.image,
