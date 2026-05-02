@@ -68,7 +68,7 @@ function initAuth() {
                     <div id="orders-view" style="display: none;">
                         <h2 style="margin-bottom: 20px; text-align: center;">My Order History</h2>
                         <div id="orders-list" style="max-height: 400px; overflow-y: auto;"></div>
-                        <button class="auth-submit" id="close-orders" style="margin-top: 20px;">Close Pagel</button>
+                        <button class="auth-submit" id="close-orders" style="margin-top: 20px;">Close</button>
                     </div>
 
                     <!-- View 3: Admin Dashboard -->
@@ -270,7 +270,7 @@ window.downloadCustomerList = function() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ShoeMall_Customers_${new Date().toLocaleDateString().replace(/\
+    a.download = `ShoeMall_Customers_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`;
     a.click();
     showToast('Customer List Exported');
 };
