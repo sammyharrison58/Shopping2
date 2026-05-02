@@ -1,5 +1,3 @@
-
-// State Management
 let cart = JSON.parse(localStorage.getItem('shoemall_cart')) || [];
 let currentUser = JSON.parse(localStorage.getItem('shoemall_user')) || null;
 let allUsers = JSON.parse(localStorage.getItem('shoemall_all_users')) || [];
@@ -8,7 +6,6 @@ let orders = JSON.parse(localStorage.getItem('shoemall_orders')) || [];
 const ADMIN_EMAIL = "sammyharrison58@gmail.com";
 let currentBroadcast = JSON.parse(localStorage.getItem('shoemall_broadcast')) || null;
 
-// Initialize Page
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
     initFilter();
@@ -17,13 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initCartDrawer();
     initAuth();
     checkBroadcast();
+    initProductModal();
 });
 
-// --- Broadcast System ---
 function checkBroadcast() {
     if (!currentBroadcast) return;
-    
-    // Inject alert if not there
+
     if (!document.getElementById('global-broadcast')) {
         const html = `
             <div class="broadcast-alert" id="global-broadcast">
@@ -47,14 +43,13 @@ window.dismissBroadcast = function() {
     }
 };
 
-// --- Authentication & Admin Logic ---
 function initAuth() {
     if (!document.getElementById('auth-modal-overlay')) {
         const authHTML = `
             <div class="modal-overlay" id="auth-modal-overlay">
                 <div class="auth-modal" style="max-width: 600px;">
                     <button class="close-modal">&times;</button>
-                    
+
                     <!-- View 1: Auth (Login/Signup) -->
                     <div id="auth-main-view">
                         <h2 id="auth-title">Welcome to ShoeMall</h2>
@@ -79,7 +74,7 @@ function initAuth() {
                     <!-- View 3: Admin Dashboard -->
                     <div id="admin-view" style="display: none;">
                         <h2 style="margin-bottom: 20px; text-align: center;">System Administration</h2>
-                        
+
                         <div class="admin-stats">
                             <div class="stat-card">
                                 <h4>Total Revenue</h4>
@@ -133,7 +128,7 @@ function initAuth() {
     closeBtn.onclick = () => overlay.classList.remove('show');
     adminExit.onclick = () => overlay.classList.remove('show');
     orderExit.onclick = () => overlay.classList.remove('show');
-    
+
     overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove('show'); };
 
     tabs.forEach(tab => {
@@ -173,7 +168,7 @@ function initAuth() {
                 return showToast('Invalid credentials.');
             }
         }
-        
+
         updateUserUI();
         showView(email === ADMIN_EMAIL ? 'admin' : 'orders');
     });
@@ -185,12 +180,11 @@ function showView(view) {
     document.getElementById('auth-main-view').style.display = view === 'auth' ? 'block' : 'none';
     document.getElementById('orders-view').style.display = view === 'orders' ? 'block' : 'none';
     document.getElementById('admin-view').style.display = view === 'admin' ? 'block' : 'none';
-    
+
     if (view === 'orders') renderOrderHistory();
     if (view === 'admin') renderAdminDashboard();
 }
 
-// --- Admin Features ---
 function renderAdminDashboard() {
     const revenue = orders.reduce((sum, o) => sum + parseFloat(o.total.replace('$','')), 0);
     document.getElementById('admin-stat-revenue').textContent = `$${revenue.toFixed(2)}`;
@@ -201,7 +195,7 @@ function renderAdminDashboard() {
 window.switchAdminTab = function(tab) {
     const btns = document.querySelectorAll('.admin-tab-btn');
     btns.forEach(b => b.classList.toggle('active', b.textContent.toLowerCase().includes(tab)));
-    
+
     const content = document.getElementById('admin-content');
     if (tab === 'orders') {
         content.innerHTML = `
@@ -271,17 +265,16 @@ window.downloadCustomerList = function() {
         const status = u.active !== false ? "Active" : "Suspended";
         csv += `${u.email},${role},${status}\n`;
     });
-    
+
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ShoeMall_Customers_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`;
+    a.download = `ShoeMall_Customers_${new Date().toLocaleDateString().replace(/\
     a.click();
     showToast('Customer List Exported');
 };
 
-// --- User Profile Features ---
 function renderOrderHistory() {
     const list = document.getElementById('orders-list');
     const userOrders = orders.filter(o => o.user === currentUser?.email);
@@ -340,7 +333,6 @@ function updateUserUI() {
     }
 }
 
-// --- Cart Core Logic ---
 function updateCartCount() {
     const counts = document.querySelectorAll('.cart-count');
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -381,7 +373,6 @@ function saveCart() {
     updateCartCount();
 }
 
-// --- Cart Interface ---
 function initCartDrawer() {
     if (!document.getElementById('cart-drawer')) {
         const html = `
@@ -436,10 +427,10 @@ function initCartDrawer() {
 
             orders.unshift(newOrder);
             localStorage.setItem('shoemall_orders', JSON.stringify(orders));
-            
+
             downloadReceipt(newOrder.id, total, cart);
             showToast('Order Recorded');
-            
+
             cart = [];
             saveCart();
             renderCartItems();
@@ -496,7 +487,6 @@ function renderCartItems() {
     totalEl.textContent = `$${sum.toFixed(2)}`;
 }
 
-// --- Systems ---
 function downloadReceipt(id, total, items) {
     const raw = `SHOEMALL OFFICIAL RECEIPT\nORDER #${id}\n------------------\n${items.map(i => `${i.title} x${i.quantity}`).join('\n')}\n------------------\nTOTAL: ${total}\nPAYBILL: 7382528\nThank you!`;
     const blob = new Blob([raw], { type: 'text/plain' });
@@ -541,3 +531,65 @@ function showToast(m) {
     setTimeout(() => t.classList.add('show'), 100);
     setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 500); }, 2000);
 }
+
+function initProductModal() {
+    const grid = document.querySelector('.product-grid');
+    if (!grid) return;
+
+    grid.addEventListener('click', (e) => {
+        const link = e.target.closest('.product-link');
+        if (!link) return;
+
+        e.preventDefault();
+        const card = link.closest('.product-card');
+
+        const data = {
+            id: card.dataset.id,
+            category: card.dataset.category || 'Footwear',
+            title: card.querySelector('.product-title').textContent,
+            price: card.querySelector('.current-price').textContent,
+            oldPrice: card.querySelector('.old-price')?.textContent || '',
+            image: card.querySelector('img').src
+        };
+
+        document.getElementById('modalImg').src = data.image;
+        document.getElementById('modalTitle').textContent = data.title;
+        document.getElementById('modalCat').textContent = data.category;
+        document.getElementById('modalPrice').textContent = data.price;
+
+        const oldPriceEl = document.getElementById('modalOldPrice');
+        if (data.oldPrice) {
+            oldPriceEl.textContent = data.oldPrice;
+            oldPriceEl.style.display = 'inline';
+        } else {
+            oldPriceEl.style.display = 'none';
+        }
+
+        const modalCartBtn = document.getElementById('modalAddToCart');
+        modalCartBtn.onclick = () => {
+            const product = {
+                id: data.id,
+                title: data.title,
+                price: data.price,
+                image: data.image,
+                quantity: 1
+            };
+            const existing = cart.find(i => i.id === product.id);
+            if (existing) existing.quantity++;
+            else cart.push(product);
+            saveCart();
+            showToast('Added to Bag');
+            closeProductModal();
+        };
+
+        document.getElementById('productModal').classList.add('show');
+    });
+}
+
+window.closeProductModal = function() {
+    document.getElementById('productModal').classList.remove('show');
+};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeProductModal();
+});

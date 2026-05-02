@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    <style
         body {
             background-color: #f1f5f9;
             display: flex;
@@ -146,7 +146,7 @@
             border-radius: 8px;
             background: white;
         }
-    </style>
+    ></style>
 </head>
 
 <body>
@@ -219,7 +219,7 @@
             <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
         </div>
     </footer>
-    <script>
+    <script
         const SAMMY_EMAIL = "sammyharrison58@gmail.com";
         const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
 
@@ -262,7 +262,7 @@
                 const payout = p.price * 0.95;
                 const statusClass = p.status === 'Active' ? 'status-active' : 'status-out';
                 const imgHtml = p.img ? `<img src="${p.img}" class="product-img-sm">` : `<div class="product-img-sm" style="display: flex; align-items: center; justify-content: center; background: #e2e8f0;"><i class="fas fa-image" style="color: #94a3b8;"></i></div>`;
-                
+
                 tbody.innerHTML += `
                     <tr>
                         <td>
@@ -290,6 +290,6 @@
         }
 
         initProducts();
-    </script>
+    ></script>
 </body>
 </html>

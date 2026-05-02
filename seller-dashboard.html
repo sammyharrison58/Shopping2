@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    <style
         body {
             background-color: #f1f5f9;
             display: flex;
@@ -211,7 +211,7 @@
                 display: none;
             }
         }
-    </style>
+    ></style>
 </head>
 
 <body>
@@ -239,7 +239,6 @@
                 </div>
             </div>
 
-            <!-- Stats Overview -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <span class="stat-label" id="revLabel">Gross Revenue</span>
@@ -272,7 +271,6 @@
                 </div>
             </div>
 
-            <!-- Product Management Section -->
             <div class="section-card">
                 <div class="section-header">
                     <h2>Your Products</h2>
@@ -292,7 +290,7 @@
                             </tr>
                         </thead>
                         <tbody id="productTableBody">
-                            <!-- Products will appear here after upload -->
+
                             <tr>
                                 <td colspan="7" style="text-align: center; color: #64748b; padding: 40px;">
                                     <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
@@ -306,7 +304,6 @@
         </main>
     </div>
 
-    <!-- Upload Modal -->
     <div id="uploadModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -342,11 +339,11 @@
         </div>
     </div>
 
-    <script>
+    <script
         // Data Configuration
         const SAMMY_EMAIL = "sammyharrison58@gmail.com";
         const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
-        
+
         // Sample data for Sammy
         const sammyData = {
             name: "Sammy Harrison",
@@ -363,15 +360,15 @@
         // Initialize Dashboard
         function initDashboard() {
             const isAdmin = (loggedInEmail === SAMMY_EMAIL);
-            
+
             // Show Admin Link if applicable
             if (isAdmin) {
                 document.getElementById('adminSidebarLink').style.display = 'block';
             }
-            
+
             // Set Name
             document.getElementById('sellerName').textContent = (loggedInEmail === SAMMY_EMAIL) ? sammyData.name : loggedInEmail.split('@')[0];
-            
+
             // Set Date
             document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
@@ -401,7 +398,7 @@
         function loadUserData() {
             const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
             const tbody = document.getElementById('productTableBody');
-            
+
             if (userProducts.length === 0) {
                 tbody.innerHTML = `
                     <tr>
@@ -476,7 +473,7 @@
                 const tbody = document.getElementById('productTableBody');
                 tbody.insertAdjacentHTML('afterbegin', createProductRow(newProduct));
             }
-            
+
             closeModal();
             alert('Product listed successfully!');
             this.reset();
@@ -484,6 +481,6 @@
         });
 
         initDashboard();
-    </script>
+    ></script>
 </body>
 </html>

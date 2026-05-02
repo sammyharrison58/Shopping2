@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    <style
         body {
             background-color: #f1f5f9;
             display: flex;
@@ -126,7 +126,7 @@
             font-size: 0.85rem;
             color: #475569;
         }
-    </style>
+    ></style>
 </head>
 
 <body>
@@ -212,7 +212,7 @@
             <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
         </div>
     </footer>
-    <script>
+    <script
         const SAMMY_EMAIL = "sammyharrison58@gmail.com";
         const loggedInEmail = localStorage.getItem('seller_logged_in') || "Guest";
 
@@ -239,7 +239,7 @@
         function renderAdminPayouts() {
             // Aggregate Platform commissions
             let totalOtherSellersSales = 0;
-            
+
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key.startsWith('products_') && !key.includes(SAMMY_EMAIL)) {
@@ -258,15 +258,15 @@
             document.getElementById('balanceLabel').textContent = "Total Admin Earnings";
             document.getElementById('balanceValue').textContent = `$${totalAdminIncome.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
             document.getElementById('balanceNote').innerHTML = `<i class="fas fa-chart-line"></i> Incl. $${platformCommissions.toFixed(2)} Platform Fees`;
-            
+
             const withdrawBtn = document.getElementById('withdrawBtn');
             withdrawBtn.style.opacity = "1";
             withdrawBtn.style.cursor = "pointer";
-            
+
             const stats = document.querySelectorAll('.section-card span[style*="font-weight: 700"]');
             stats[0].textContent = `$${(sammyData.ownSales + totalOtherSellersSales).toLocaleString()}`;
             stats[1].textContent = `$${platformCommissions.toLocaleString()}`;
-            
+
             // Progress bars
             const bars = document.querySelectorAll('.section-card div[style*="height: 6px"] div');
             bars[0].style.width = "100%";
@@ -300,6 +300,6 @@
         }
 
         initPayouts();
-    </script>
+    ></script>
 </body>
 </html>

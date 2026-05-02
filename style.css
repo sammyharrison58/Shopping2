@@ -23,7 +23,6 @@ body {
     line-height: 1.6;
 }
 
-/* --- Top Utility Bar --- */
 .top-bar {
     background: #fff;
     border-bottom: 1px solid var(--border-color);
@@ -45,7 +44,6 @@ body {
     color: var(--primary-red);
 }
 
-/* --- Main Header --- */
 header {
     background: var(--white);
     padding: 15px 5%;
@@ -138,7 +136,6 @@ header {
     font-weight: bold;
 }
 
-/* --- Main Layout --- */
 .main-container {
     max-width: 1300px;
     margin: 20px auto;
@@ -148,7 +145,6 @@ header {
     gap: 20px;
 }
 
-/* --- Sidebar --- */
 .sidebar {
     background: var(--white);
     border-radius: 8px;
@@ -184,7 +180,6 @@ header {
     padding-left: 25px;
 }
 
-/* --- Hero Banner --- */
 .hero-content {
     display: flex;
     flex-direction: column;
@@ -243,7 +238,6 @@ header {
     transition: background 0.2s;
 }
 
-/* --- Product Section --- */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -355,7 +349,6 @@ header {
     margin-left: 5px;
 }
 
-/* --- Footer --- */
 footer {
     background: #2D2D2D;
     color: #FFF;
@@ -401,7 +394,6 @@ footer {
     font-size: 0.85rem;
 }
 
-/* --- Mobile Responsive --- */
 @media (max-width: 992px) {
     .main-container {
         grid-template-columns: 1fr;
@@ -452,7 +444,6 @@ footer {
     }
 }
 
-/* --- Added Functionality Styles --- */
 .product-card {
     position: relative;
 }
@@ -492,7 +483,6 @@ footer {
     font-weight: 700;
 }
 
-/* Toast Notification */
 .cart-toast {
     position: fixed;
     bottom: 20px;
@@ -521,7 +511,6 @@ footer {
     font-size: 1.2rem;
 }
 
-/* --- Cart Drawer --- */
 .cart-drawer-overlay {
     position: fixed;
     top: 0;
@@ -667,7 +656,6 @@ footer {
     }
 }
 
-/* --- Auth Modal --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -778,7 +766,6 @@ footer {
     color: #999;
 }
 
-/* User Info State */
 .user-logged-in {
     display: flex;
     align-items: center;
@@ -787,7 +774,6 @@ footer {
     color: var(--primary-red);
 }
 
-/* --- Admin Dashboard --- */
 #admin-view {
     width: 100%;
 }
@@ -875,7 +861,6 @@ footer {
     border-color: var(--primary-red);
 }
 
-/* --- Broadcast Alert --- */
 .broadcast-alert {
     position: fixed;
     top: -100px;
