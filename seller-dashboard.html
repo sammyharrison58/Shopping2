@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard | ShoeMall</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            flex-grow: 1;
+        }
+
+        .dash-sidebar {
+            background: #1e293b;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .dash-nav {
+            list-style: none;
+            margin-top: 40px;
+        }
+
+        .dash-nav li {
+            margin-bottom: 10px;
+        }
+
+        .dash-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .dash-nav a:hover, .dash-nav a.active {
+            background: #334155;
+            color: white;
+        }
+
+        .dash-main {
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .stat-footer {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .commission-note {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 5px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Product Table */
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .product-table th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .product-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .product-img-sm {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #f8fafc;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-pending { background: #fef9c3; color: #854d0e; }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+            .dash-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <a href="index.html" class="logo" style="color: white; font-size: 1.5rem;">
+                <i class="fas fa-shoe-prints"></i> ShoeMall
+            </a>
+            <ul class="dash-nav">
+                <li><a href="#" class="active"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                <li><a href="#"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="#"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="#"><i class="fas fa-wallet"></i> Payouts</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 40px;"><a href="seller-auth.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="dash-main">
+            <div class="dash-header">
+                <h1>Welcome back, Premium Kicks Hub!</h1>
+                <div class="user-profile">
+                    <span id="currentDate" style="color: #64748b; font-size: 0.9rem;"></span>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Gross Revenue</span>
+                    <div class="stat-value">$4,250.00</div>
+                    <div class="stat-footer">
+                        <i class="fas fa-arrow-up"></i> 12% from last month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Net Earnings (After 5% Comm.)</span>
+                    <div class="stat-value">$4,037.50</div>
+                    <div class="commission-note">- $212.50 Platform Fee</div>
+                    <div class="stat-footer">
+                        <i class="fas fa-arrow-up"></i> 12% from last month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Orders</span>
+                    <div class="stat-value">48</div>
+                    <div class="stat-footer">
+                        <i class="fas fa-arrow-up"></i> 5 new today
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Store Rating</span>
+                    <div class="stat-value">4.9/5</div>
+                    <div class="stat-footer">
+                        <i class="fas fa-star" style="color: #fbbf24;"></i> Based on 124 reviews
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Management Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>Your Products</h2>
+                    <button class="btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Upload New Product</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Your Payout (95%)</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody">
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
+                                        <strong>Ultra-Light Marathon Sneakers</strong>
+                                    </div>
+                                </td>
+                                <td>Sneakers</td>
+                                <td>$45.00</td>
+                                <td style="color: #10b981; font-weight: 600;">$42.75</td>
+                                <td>24</td>
+                                <td><span class="status-pill status-active">Active</span></td>
+                                <td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #94a3b8;"></i></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100" class="product-img-sm">
+                                        <strong>Brown Leather Oxford</strong>
+                                    </div>
+                                </td>
+                                <td>Formal Shoes</td>
+                                <td>$120.00</td>
+                                <td style="color: #10b981; font-weight: 600;">$114.00</td>
+                                <td>12</td>
+                                <td><span class="status-pill status-active">Active</span></td>
+                                <td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #94a3b8;"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Upload New Product</h3>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="productUploadForm">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="pName" placeholder="e.g. Air Max 2026" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="pPrice" placeholder="0.00" oninput="calculatePayout()" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                            <option>Sneakers</option>
+                            <option>Boots</option>
+                            <option>Formal Shoes</option>
+                            <option>Sandals</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="payoutPreview" style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
+                    Your Payout (95%): <strong style="color: #10b981;">$0.00</strong>
+                    <div style="color: #64748b; font-size: 0.8rem;">ShoeMall Commission (5%): $0.00</div>
+                </div>
+                <button type="submit" class="auth-btn" style="width: 100%; padding: 14px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">List Product</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Set date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+        });
+
+        // Modal Logic
+        function openModal() {
+            document.getElementById('uploadModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        function calculatePayout() {
+            const price = parseFloat(document.getElementById('pPrice').value) || 0;
+            const payout = price * 0.95;
+            const commission = price * 0.05;
+            document.getElementById('payoutPreview').innerHTML = `
+                Your Payout (95%): <strong style="color: #10b981;">$${payout.toFixed(2)}</strong>
+                <div style="color: #64748b; font-size: 0.8rem;">ShoeMall Commission (5%): $${commission.toFixed(2)}</div>
+            `;
+        }
+
+        // Handle Product Submission
+        document.getElementById('productUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const payout = price * 0.95;
+
+            const tbody = document.getElementById('productTableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="product-img-sm" style="display: flex; align-items: center; justify-content: center; background: #e2e8f0;"><i class="fas fa-image" style="color: #94a3b8;"></i></div>
+                        <strong>${name}</strong>
+                    </div>
+                </td>
+                <td>Sneakers</td>
+                <td>$${price.toFixed(2)}</td>
+                <td style="color: #10b981; font-weight: 600;">$${payout.toFixed(2)}</td>
+                <td>0</td>
+                <td><span class="status-pill status-pending">Pending Review</span></td>
+                <td><i class="fas fa-ellipsis-v" style="cursor: pointer; color: #94a3b8;"></i></td>
+            `;
+            tbody.prepend(newRow);
+            
+            closeModal();
+            alert('Product listed successfully and is now pending review!');
+            this.reset();
+            calculatePayout();
+        });
+    </script>
+</body>
+</html>

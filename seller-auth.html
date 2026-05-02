@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell on ShoeMall | Partner with the Best</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --seller-primary: #2563eb;
+            --seller-secondary: #1e40af;
+            --seller-bg: #f8fafc;
+        }
+
+        .seller-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1200');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .seller-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .seller-hero p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        .auth-container {
+            max-width: 1000px;
+            margin: -60px auto 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .auth-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .auth-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #1e293b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--seller-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--seller-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .auth-btn:hover {
+            background: var(--seller-secondary);
+        }
+
+        .benefits-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .benefits-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .benefit-item {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .benefit-item i {
+            font-size: 2.5rem;
+            color: var(--seller-primary);
+            margin-bottom: 20px;
+        }
+
+        .benefit-item h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+
+        .benefit-item p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .commission-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                grid-template-columns: 1fr;
+            }
+            .seller-hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Utility Bar (Consistent) -->
+    <div class="top-bar">
+        <span>Welcome to ShoeMall!</span>
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="seller-auth.html">Sell on ShoeMall</a>
+        <a href="About us.html">Help Center</a>
+        <a href="shoe-coins.html">Shoe Coins</a>
+        <a href="Contacts.html">Contact Us</a>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">
+            <i class="fas fa-shoe-prints"></i> ShoeMall Sellers
+        </a>
+    </header>
+
+    <main>
+        <section class="seller-hero">
+            <div class="commission-badge">Flat 5% Commission Fee</div>
+            <h1>Grow Your Shoe Business with ShoeMall</h1>
+            <p>Join thousands of successful sellers. Reach millions of customers across the continent with our world-class e-commerce platform.</p>
+        </section>
+
+        <div class="auth-container">
+            <!-- Login Card -->
+            <div class="auth-card">
+                <h2>Seller Login</h2>
+                <form id="sellerLoginForm">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" placeholder="seller@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Sign In to Dashboard</button>
+                </form>
+            </div>
+
+            <!-- Register Card -->
+            <div class="auth-card">
+                <h2>Become a Seller</h2>
+                <form id="sellerRegisterForm">
+                    <div class="form-group">
+                        <label>Store Name</label>
+                        <input type="text" placeholder="e.g., Premium Kicks Hub" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" placeholder="business@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="Create a strong password" required>
+                    </div>
+                    <button type="submit" class="auth-btn" style="background: #1e293b;">Create Store</button>
+                </form>
+            </div>
+        </div>
+
+        <section class="benefits-section">
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Low Commission</h3>
+                    <p>We only take a 5% commission on successful sales. You keep 95% of your earnings!</p>
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Inventory Management</h3>
+                    <p>Powerful tools to upload products, track stock levels, and manage your catalogue with ease.</p>
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-wallet"></i>
+                    <h3>Fast Payouts</h3>
+                    <p>Get your earnings deposited directly into your account on a weekly basis.</p>
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-shield-halved"></i>
+                    <h3>Seller Protection</h3>
+                    <p>Advanced fraud protection and secure payment processing for every transaction.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple mock authentication for demonstration
+        document.getElementById('sellerLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real app, this would verify credentials
+            window.location.href = 'seller-dashboard.html';
+        });
+
+        document.getElementById('sellerRegisterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real app, this would create an account
+            alert('Store created successfully! Welcome to ShoeMall.');
+            window.location.href = 'seller-dashboard.html';
+        });
+    </script>
+</body>
+</html>
