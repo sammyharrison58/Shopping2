@@ -201,6 +201,48 @@
         </div>
     </footer>
 
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = this;
+            const btn = document.getElementById('sendBtn');
+            const btnText = document.getElementById('btnText');
+            const action = form.getAttribute('action');
+            
+            // UI State: Loading
+            btn.disabled = true;
+            btnText.textContent = 'Sending...';
+            
+            const formData = new FormData(form);
+            
+            fetch(action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Success
+                    alert('Thank you! Your message has been sent to sammyharrison58@gmail.com. We will get back to you soon.');
+                    form.reset();
+                } else {
+                    // Error
+                    alert('Oops! There was a problem sending your message. Please try again.');
+                }
+            })
+            .catch(error => {
+                alert('Connection error. Please check your internet and try again.');
+            })
+            .finally(() => {
+                // UI State: Reset
+                btn.disabled = false;
+                btnText.textContent = 'Send Message';
+            });
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 
