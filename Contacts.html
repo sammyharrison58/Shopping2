@@ -139,7 +139,9 @@
                     <input type="email" name="email" placeholder="email@example.com" required>
                     <label>Message</label>
                     <textarea name="message" rows="5" placeholder="How can we help you?" required></textarea>
+                    <div id="formAlert" class="form-alert"></div>
                     <button type="submit" class="submit-btn" id="sendBtn">
+                        <div id="btnSpinner" class="btn-spinner"></div>
                         <span id="btnText">Send Message</span>
                     </button>
                 </form>
@@ -208,11 +210,15 @@
             const form = this;
             const btn = document.getElementById('sendBtn');
             const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            const alert = document.getElementById('formAlert');
             const action = form.getAttribute('action');
             
             // UI State: Loading
             btn.disabled = true;
             btnText.textContent = 'Sending...';
+            btnSpinner.style.display = 'block';
+            alert.style.display = 'none';
             
             const formData = new FormData(form);
             
@@ -226,20 +232,27 @@
             .then(response => {
                 if (response.ok) {
                     // Success
-                    alert('Thank you! Your message has been sent to sammyharrison58@gmail.com. We will get back to you soon.');
+                    alert.textContent = 'Thank you! Your message has been sent to sammyharrison58@gmail.com.';
+                    alert.className = 'form-alert success';
+                    alert.style.display = 'flex';
                     form.reset();
                 } else {
                     // Error
-                    alert('Oops! There was a problem sending your message. Please try again.');
+                    alert.textContent = 'Oops! There was a problem sending your message.';
+                    alert.className = 'form-alert error';
+                    alert.style.display = 'flex';
                 }
             })
             .catch(error => {
-                alert('Connection error. Please check your internet and try again.');
+                alert.textContent = 'Connection error. Please check your internet.';
+                alert.className = 'form-alert error';
+                alert.style.display = 'flex';
             })
             .finally(() => {
                 // UI State: Reset
                 btn.disabled = false;
                 btnText.textContent = 'Send Message';
+                btnSpinner.style.display = 'none';
             });
         });
     </script>

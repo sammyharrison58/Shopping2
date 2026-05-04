@@ -448,37 +448,14 @@ function initCartDrawer() {
             return;
         }
         if (cart.length === 0) return;
-
-        const total = document.getElementById('drawer-total-price').textContent;
-        const prompt = `PAYMENT SYSTEM\n--------------\nTotal: ${total}\n\nM-Pesa Paybill: 7382528\nAccount: ${currentUser.email.split('@')[0]}\n\nAuthorize once paid.`;
-
-        if (confirm(prompt)) {
-            const orderID = Math.floor(10000 + Math.random() * 90000);
-            const newOrder = {
-                id: orderID.toString(),
-                date: new Date().toLocaleString(),
-                user: currentUser.email,
-                total: total,
-                items: [...cart]
-            };
-
-            orders.unshift(newOrder);
-            localStorage.setItem('shoemall_orders', JSON.stringify(orders));
-
-            downloadReceipt(newOrder.id, total, cart);
-            showToast('Order Recorded');
-
-            cart = [];
-            saveCart();
-            renderCartItems();
-            setTimeout(toggle, 1000);
-        }
+        toggle(); // Close drawer
+        openCheckout();
     };
 
     drawer.querySelector('.cart-items-list').onclick = (e) => {
         const id = e.target.dataset.id;
         const item = cart.find(i => i.id === id);
-        if (!item) return;
+        if (!item && !e.target.classList.contains('remove-item')) return;
 
         if (e.target.classList.contains('plus-qty')) item.quantity++;
         else if (e.target.classList.contains('minus-qty')) item.quantity--;
@@ -488,7 +465,233 @@ function initCartDrawer() {
         saveCart();
         renderCartItems();
     };
+};
+
+function openCheckout() {
+    if (!document.getElementById('checkout-modal-overlay')) {
+        const html = `
+            <div class="modal-overlay" id="checkout-modal-overlay">
+                <div class="checkout-modal">
+                    <div class="checkout-header">
+                        <h2>Checkout</h2>
+                        <div class="checkout-steps">
+                            <div class="step active" id="step1">
+                                <div class="step-num">1</div>
+                                <span>Delivery</span>
+                            </div>
+                            <div class="step" id="step2">
+                                <div class="step-num">2</div>
+                                <span>Payment</span>
+                            </div>
+                        </div>
+                        <button class="close-modal" onclick="closeCheckout()">&times;</button>
+                    </div>
+                    <div class="checkout-body">
+                        <div class="checkout-content" id="checkout-main">
+                            <!-- Injected by Step -->
+                        </div>
+                        <div class="checkout-sidebar">
+                            <h3 style="margin-bottom: 20px;">Order Summary</h3>
+                            <div id="checkout-items" style="max-height: 200px; overflow-y: auto; margin-bottom: 20px;"></div>
+                            <div class="summary-item"><span>Subtotal</span><span id="ck-subtotal">$0.00</span></div>
+                            <div class="summary-item"><span>Shipping</span><span id="ck-shipping">$5.00</span></div>
+                            <div class="summary-item"><span>Tax (VAT)</span><span id="ck-tax">$0.00</span></div>
+                            <div class="summary-total"><span>Total</span><span id="ck-total">$0.00</span></div>
+                            <button class="place-order-btn" id="nextStepBtn">Continue to Payment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', html);
+    }
+
+    const overlay = document.getElementById('checkout-modal-overlay');
+    overlay.classList.add('show');
+    renderCheckoutStep(1);
 }
+
+window.closeCheckout = () => {
+    document.getElementById('checkout-modal-overlay').classList.remove('show');
+};
+
+let checkoutData = { step: 1, address: {}, payment: 'mpesa' };
+
+function renderCheckoutStep(step) {
+    const main = document.getElementById('checkout-main');
+    const btn = document.getElementById('nextStepBtn');
+    checkoutData.step = step;
+
+    // Update Steps UI
+    document.getElementById('step1').className = step === 1 ? 'step active' : 'step done';
+    document.getElementById('step2').className = step === 2 ? 'step active' : (step > 2 ? 'step done' : 'step');
+
+    if (step === 1) {
+        main.innerHTML = `
+            <div class="checkout-section">
+                <h3><i class="fas fa-map-marker-alt" style="color: var(--primary-red);"></i> Shipping Information</h3>
+                <div class="form-group">
+                    <label>Recipient Name</label>
+                    <input type="text" id="ship-name" value="${currentUser.email.split('@')[0]}" placeholder="Full Name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="ship-phone" placeholder="+254 7xx xxx xxx">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>City/Region</label>
+                        <select id="ship-city">
+                            <option>Nairobi</option>
+                            <option>Mombasa</option>
+                            <option>Kisumu</option>
+                            <option>Nakuru</option>
+                            <option>Eldoret</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Street / Building</label>
+                        <input type="text" id="ship-street" placeholder="e.g. Kimathi St, House 4">
+                    </div>
+                </div>
+            </div>
+        `;
+        btn.textContent = 'Continue to Payment';
+        btn.onclick = () => {
+            const name = document.getElementById('ship-name').value;
+            const phone = document.getElementById('ship-phone').value;
+            if (!name || !phone) return showToast('Please fill all fields');
+            checkoutData.address = { name, phone, city: document.getElementById('ship-city').value };
+            renderCheckoutStep(2);
+        };
+    } else if (step === 2) {
+        main.innerHTML = `
+            <div class="checkout-section">
+                <h3><i class="fas fa-credit-card" style="color: var(--primary-red);"></i> Payment Method</h3>
+                <div class="payment-methods">
+                    <div class="payment-card active" onclick="selectPayment('mpesa', this)">
+                        <i class="fas fa-mobile-alt" style="color: #2e7d32;"></i>
+                        <strong>M-Pesa</strong>
+                        <small>Instant Pay</small>
+                    </div>
+                    <div class="payment-card" onclick="selectPayment('card', this)">
+                        <i class="fas fa-credit-card" style="color: #1976d2;"></i>
+                        <strong>Card</strong>
+                        <small>Visa/Mastercard</small>
+                    </div>
+                    <div class="payment-card" onclick="selectPayment('coins', this)">
+                        <i class="fas fa-coins" style="color: #FFB800;"></i>
+                        <strong>Shoe Coins</strong>
+                        <small>Loyalty Credit</small>
+                    </div>
+                </div>
+                <div id="payment-details" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    <p style="font-size: 0.9rem; color: #555;">
+                        <strong>M-Pesa Online:</strong> You will receive a prompt on your phone <strong>${checkoutData.address.phone}</strong> to enter your M-Pesa PIN.
+                    </p>
+                </div>
+            </div>
+        `;
+        btn.textContent = 'Place Order Now';
+        btn.onclick = finalizeOrder;
+    }
+
+    updateSummary();
+}
+
+window.selectPayment = (type, el) => {
+    checkoutData.payment = type;
+    document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    
+    const details = document.getElementById('payment-details');
+    if (type === 'mpesa') {
+        details.innerHTML = `<p><strong>M-Pesa:</strong> Prompt will be sent to ${checkoutData.address.phone}</p>`;
+    } else if (type === 'card') {
+        details.innerHTML = `
+            <div class="form-group"><input type="text" placeholder="Card Number"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="text" placeholder="MM/YY">
+                <input type="text" placeholder="CVC">
+            </div>
+        `;
+    } else {
+        details.innerHTML = `<p><strong>Shoe Coins:</strong> Your current balance is 0 coins. $0.00 will be deducted.</p>`;
+    }
+};
+
+function updateSummary() {
+    const list = document.getElementById('checkout-items');
+    let sub = 0;
+    list.innerHTML = cart.map(i => {
+        const p = parseFloat(i.price.replace('$', ''));
+        sub += p * i.quantity;
+        return `
+            <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.85rem;">
+                <img src="${i.image}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+                <div style="flex:1;"><strong>${i.title}</strong><br><span style="color:#888;">Qty: ${i.quantity}</span></div>
+                <span>${i.price}</span>
+            </div>
+        `;
+    }).join('');
+
+    const ship = 5.00;
+    const tax = sub * 0.16; // 16% VAT
+    const total = sub + ship + tax;
+
+    document.getElementById('ck-subtotal').textContent = `$${sub.toFixed(2)}`;
+    document.getElementById('ck-tax').textContent = `$${tax.toFixed(2)}`;
+    document.getElementById('ck-total').textContent = `$${total.toFixed(2)}`;
+}
+
+function finalizeOrder() {
+    const btn = document.getElementById('nextStepBtn');
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+
+    setTimeout(() => {
+        const orderID = Math.floor(100000 + Math.random() * 900000);
+        const total = document.getElementById('ck-total').textContent;
+        const newOrder = {
+            id: orderID.toString(),
+            date: new Date().toLocaleString(),
+            user: currentUser.email,
+            total: total,
+            items: [...cart],
+            shipping: checkoutData.address,
+            payment: checkoutData.payment
+        };
+
+        orders.unshift(newOrder);
+        localStorage.setItem('shoemall_orders', JSON.stringify(orders));
+
+        // Show Success View
+        const main = document.getElementById('checkout-main');
+        document.querySelector('.checkout-sidebar').style.display = 'none';
+        document.getElementById('checkout-main').style.gridColumn = 'span 2';
+        
+        main.innerHTML = `
+            <div class="order-success-anim">
+                <div class="success-icon"><i class="fas fa-check"></i></div>
+                <h2 style="font-size: 2rem; margin-bottom: 10px;">Order Success!</h2>
+                <p style="color: #666; margin-bottom: 30px;">Your order <strong>#${orderID}</strong> has been placed successfully.<br>A confirmation receipt has been generated.</p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button id="downloadReceiptBtn" class="btn-primary" style="background: #2e7d32;"><i class="fas fa-file-invoice"></i> Download Receipt</button>
+                    <button onclick="closeCheckout(); window.location.reload();" class="btn-primary">Continue Shopping</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('downloadReceiptBtn').onclick = () => downloadReceipt(orderID, total, newOrder.items);
+        
+        // Auto-download
+        downloadReceipt(orderID, total, newOrder.items);
+
+        cart = [];
+        saveCart();
+    }, 2000);
+}
+
 
 function renderCartItems() {
     const list = document.querySelector('.cart-items-list');
