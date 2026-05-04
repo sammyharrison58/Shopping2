@@ -126,6 +126,76 @@
             font-size: 0.85rem;
             color: #475569;
         }
+
+        /* Withdrawal Modal Styles (Matching Checkout) */
+        .withdraw-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3100;
+            padding: 20px;
+            opacity: 1;
+        }
+
+        .withdraw-modal {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .withdraw-steps {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .w-step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .w-step.active { background: #10b981; color: white; }
+        .w-step.done { background: #10b981; color: white; }
+
+        .method-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+
+        .method-card:hover { border-color: #cbd5e1; }
+        .method-card.active { border-color: #10b981; background: #f0fdf4; }
+
+        .method-card i { font-size: 1.5rem; color: #64748b; }
+        .method-card.active i { color: #10b981; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
     </style>
 </head>
 
@@ -153,7 +223,7 @@
                     <div class="balance-amount" id="balanceValue">$0.00</div>
                     <div style="font-size: 0.8rem; opacity: 0.7;" id="balanceNote">Start selling to build your balance</div>
                 </div>
-                <button class="btn-withdraw" id="withdrawBtn" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-paper-plane"></i> Withdraw Funds</button>
+                <button class="btn-withdraw" id="withdrawBtn" onclick="handleWithdrawClick()" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-paper-plane"></i> Withdraw Funds</button>
             </div>
 
             <div class="payout-grid">
@@ -207,6 +277,64 @@
         </main>
     </div>
 
+    <!-- Withdrawal Modal -->
+    <div class="withdraw-overlay" id="withdrawModal">
+        <div class="withdraw-modal">
+            <div id="modalContent">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2>Withdraw Funds</h2>
+                    <i class="fas fa-times" style="cursor: pointer;" onclick="closeWithdrawModal()"></i>
+                </div>
+
+                <div class="withdraw-steps">
+                    <div class="w-step active" id="ws-1">1</div>
+                    <div style="width: 40px; height: 2px; background: #e2e8f0; align-self: center;"></div>
+                    <div class="w-step" id="ws-2">2</div>
+                </div>
+
+                <div id="w-step-1">
+                    <div style="margin-bottom: 25px;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;">Amount to Withdraw</label>
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: 700;">$</span>
+                            <input type="number" id="withdrawAmount" placeholder="0.00" style="width: 100%; padding: 15px 15px 15px 35px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1.1rem; font-weight: 700; outline: none;">
+                        </div>
+                        <p style="font-size: 0.8rem; color: #64748b; margin-top: 8px;">Minimum withdrawal: $10.00</p>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;">Select Payout Method</label>
+                        <div class="method-card active" onclick="selectMethod(this, 'mpesa')">
+                            <i class="fas fa-mobile-alt"></i>
+                            <div>
+                                <div style="font-weight: 700;">M-Pesa (B2C)</div>
+                                <div style="font-size: 0.8rem; color: #64748b;">Instant transfer to your phone</div>
+                            </div>
+                        </div>
+                        <div class="method-card" onclick="selectMethod(this, 'bank')">
+                            <i class="fas fa-university"></i>
+                            <div>
+                                <div style="font-weight: 700;">Bank Transfer</div>
+                                <div style="font-size: 0.8rem; color: #64748b;">Process time: 2-3 business days</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-withdraw" style="width: 100%;" onclick="proceedToProcess()">Initiate Withdrawal</button>
+                </div>
+
+                <div id="w-step-2" style="display: none; text-align: center; padding: 20px 0;">
+                    <div style="width: 60px; height: 60px; border: 4px solid #f3f3f3; border-top: 4px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                    <h3 id="w-status-title">Processing Withdrawal...</h3>
+                    <p id="w-status-desc" style="color: #64748b; margin-top: 10px;">Connecting to payment gateway...</p>
+                    <div id="w-status-box" style="margin-top: 20px; background: #f0fdf4; padding: 15px; border-radius: 8px; font-size: 0.85rem; color: #10b981;">
+                        <i class="fas fa-shield-alt"></i> Verifying seller credentials...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="copyright">
             <p>&copy; 2026 ShoeMall Seller Central. All Rights Reserved.</p>
@@ -224,16 +352,104 @@
             ]
         };
 
+        let selectedMethod = 'mpesa';
+
         function initPayouts() {
+            console.log("Initializing payouts for:", loggedInEmail);
             const isAdmin = (loggedInEmail === SAMMY_EMAIL);
+            
             if (isAdmin) {
                 if(document.getElementById('adminSidebarLink')) document.getElementById('adminSidebarLink').style.display = 'block';
-            }
-            if (isAdmin) {
                 renderAdminPayouts();
             } else {
                 renderUserPayouts();
             }
+
+            // Enable UI if authorized
+            const withdrawBtn = document.getElementById('withdrawBtn');
+            const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+            
+            if (isAdmin || userProducts.length > 0) {
+                console.log("Enabling withdrawal button");
+                withdrawBtn.style.opacity = "1";
+                withdrawBtn.style.cursor = "pointer";
+            }
+        }
+
+        function handleWithdrawClick() {
+            const isAdmin = (loggedInEmail === SAMMY_EMAIL);
+            const userProducts = JSON.parse(localStorage.getItem(`products_${loggedInEmail}`) || "[]");
+            
+            if (isAdmin || userProducts.length > 0) {
+                openWithdrawModal();
+            } else {
+                alert("You need a balance to withdraw funds. Start selling today!");
+            }
+        }
+
+        function openWithdrawModal() {
+            console.log('Opening withdraw modal');
+            document.getElementById('withdrawModal').style.display = 'flex';
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'none';
+            resetWithdrawFlow();
+        }
+
+        function selectMethod(el, method) {
+            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            selectedMethod = method;
+        }
+
+        function proceedToProcess() {
+            const amount = document.getElementById('withdrawAmount').value;
+            if (!amount || amount < 10) {
+                alert("Please enter a valid amount (Min $10.00)");
+                return;
+            }
+
+            document.getElementById('w-step-1').style.display = 'none';
+            document.getElementById('w-step-2').style.display = 'block';
+            document.getElementById('ws-2').classList.add('active');
+
+            // Realistic B2C Simulation
+            setTimeout(() => {
+                document.getElementById('w-status-title').textContent = selectedMethod === 'mpesa' ? "M-Pesa B2C Initiated" : "Bank Transfer Queued";
+                document.getElementById('w-status-desc').textContent = selectedMethod === 'mpesa' ? "Sending funds to your registered Safaricom number..." : "Transaction submitted to clearing house...";
+                document.getElementById('w-status-box').innerHTML = `<i class="fas fa-exchange-alt"></i> Transaction Hash: B2C${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+                
+                setTimeout(() => finalizeWithdrawal(amount), 4000);
+            }, 2000);
+        }
+
+        function finalizeWithdrawal(amount) {
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="width: 80px; height: 80px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 20px;">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 style="margin-bottom: 10px;">Withdrawal Successful!</h2>
+                    <p style="color: #64748b; margin-bottom: 30px;">Your funds of <strong>$${parseFloat(amount).toFixed(2)}</strong> are being processed via ${selectedMethod.toUpperCase()}.</p>
+                    <button class="btn-withdraw" style="width: 100%;" onclick="window.location.reload()">Return to Dashboard</button>
+                </div>
+            `;
+
+            // Record in history (simulated for now)
+            const newEntry = {
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                amount: `-$${parseFloat(amount).toFixed(2)}`,
+                method: selectedMethod === 'mpesa' ? "M-Pesa B2C" : "Bank Transfer",
+                status: "Processing"
+            };
+            
+            // In a real app, you'd save this to localStorage/DB
+        }
+
+        function resetWithdrawFlow() {
+            // Reload would reset it anyway, but good for UX if modal just hides
         }
 
         function renderAdminPayouts() {
