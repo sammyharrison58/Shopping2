@@ -22,18 +22,23 @@ function loadMarketplaceProducts() {
     const grid = document.querySelector('.product-grid');
     if (!grid) return;
 
-    const sellers = JSON.parse(localStorage.getItem('all_platform_sellers') || "[]");
-    let allApprovedProducts = [];
+    let sellers = JSON.parse(localStorage.getItem('all_platform_sellers') || "[]");
+    
+    // Safety: ensure admin is tracked if they have products
+    if (!sellers.includes(ADMIN_EMAIL) && localStorage.getItem(`products_${ADMIN_EMAIL}`)) {
+        sellers.push(ADMIN_EMAIL);
+    }
 
+    let allApprovedProducts = [];
     sellers.forEach(email => {
         const products = JSON.parse(localStorage.getItem(`products_${email}`) || "[]");
         const approved = products.filter(p => p.approved === true);
-        allApprovedProducts = allApprovedProducts.concat(approved);
+        allApprovedProducts = allApprovedProducts.concat(approved.map(p => ({...p, sellerEmail: email})));
     });
 
     allApprovedProducts.forEach(p => {
         const productHTML = `
-            <div class="product-card" data-id="${p.id}" data-category="${p.cat.toLowerCase()}" data-seller="${email}">
+            <div class="product-card" data-id="${p.id}" data-category="${p.cat.toLowerCase()}" data-seller="${p.sellerEmail}">
                 <a href="#" class="product-link">
                     <div class="product-image">
                         <span class="discount-tag">MARKETPLACE</span>

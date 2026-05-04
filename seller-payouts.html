@@ -302,7 +302,7 @@
                         <p style="font-size: 0.8rem; color: #64748b; margin-top: 8px;">Minimum withdrawal: $10.00</p>
                     </div>
 
-                    <div style="margin-bottom: 30px;">
+                    <div style="margin-bottom: 20px;">
                         <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;">Select Payout Method</label>
                         <div class="method-card active" onclick="selectMethod(this, 'mpesa')">
                             <i class="fas fa-mobile-alt"></i>
@@ -318,6 +318,25 @@
                                 <div style="font-size: 0.8rem; color: #64748b;">Process time: 2-3 business days</div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- M-Pesa Phone Number -->
+                    <div id="mpesa-fields" style="margin-bottom: 25px;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;"><i class="fas fa-phone-alt" style="color: #10b981;"></i> M-Pesa Phone Number</label>
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: 700; color: #64748b;">+254</span>
+                            <input type="tel" id="mpesaPhone" placeholder="7XXXXXXXX" maxlength="9" style="width: 100%; padding: 15px 15px 15px 60px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1.1rem; font-weight: 700; outline: none;">
+                        </div>
+                        <p style="font-size: 0.8rem; color: #64748b; margin-top: 8px;">Enter Safaricom number to receive funds</p>
+                    </div>
+
+                    <!-- Bank Transfer Fields -->
+                    <div id="bank-fields" style="display: none; margin-bottom: 25px;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;"><i class="fas fa-university" style="color: #2563eb;"></i> Bank Details</label>
+                        <input type="text" id="bankName" placeholder="Bank Name (e.g. KCB, Equity)" style="width: 100%; padding: 13px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; font-weight: 600; outline: none; margin-bottom: 12px;">
+                        <input type="text" id="bankAccount" placeholder="Account Number" style="width: 100%; padding: 13px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; font-weight: 600; outline: none; margin-bottom: 12px;">
+                        <input type="text" id="accountHolder" placeholder="Account Holder Name" style="width: 100%; padding: 13px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; font-weight: 600; outline: none;">
+                        <p style="font-size: 0.8rem; color: #64748b; margin-top: 8px;">Funds will arrive in 2-3 business days</p>
                     </div>
 
                     <button class="btn-withdraw" style="width: 100%;" onclick="proceedToProcess()">Initiate Withdrawal</button>
@@ -401,6 +420,10 @@
             document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             selectedMethod = method;
+
+            // Toggle destination fields
+            document.getElementById('mpesa-fields').style.display = method === 'mpesa' ? 'block' : 'none';
+            document.getElementById('bank-fields').style.display = method === 'bank' ? 'block' : 'none';
         }
 
         function proceedToProcess() {
@@ -410,42 +433,72 @@
                 return;
             }
 
+            let destination = '';
+            if (selectedMethod === 'mpesa') {
+                const phone = document.getElementById('mpesaPhone').value.trim();
+                if (!phone || phone.length < 9) {
+                    alert("Please enter a valid Safaricom phone number (9 digits)");
+                    return;
+                }
+                destination = '+254' + phone;
+            } else {
+                const bankName = document.getElementById('bankName').value.trim();
+                const bankAccount = document.getElementById('bankAccount').value.trim();
+                const holder = document.getElementById('accountHolder').value.trim();
+                if (!bankName || !bankAccount || !holder) {
+                    alert("Please fill in all bank details");
+                    return;
+                }
+                destination = `${bankName} - ****${bankAccount.slice(-4)} (${holder})`;
+            }
+
             document.getElementById('w-step-1').style.display = 'none';
             document.getElementById('w-step-2').style.display = 'block';
             document.getElementById('ws-2').classList.add('active');
 
             // Realistic B2C Simulation
+            const destDisplay = selectedMethod === 'mpesa' ? destination : destination.split('(')[0].trim();
             setTimeout(() => {
                 document.getElementById('w-status-title').textContent = selectedMethod === 'mpesa' ? "M-Pesa B2C Initiated" : "Bank Transfer Queued";
-                document.getElementById('w-status-desc').textContent = selectedMethod === 'mpesa' ? "Sending funds to your registered Safaricom number..." : "Transaction submitted to clearing house...";
+                document.getElementById('w-status-desc').textContent = selectedMethod === 'mpesa' ? `Sending funds to ${destination}...` : `Routing to ${destDisplay}...`;
                 document.getElementById('w-status-box').innerHTML = `<i class="fas fa-exchange-alt"></i> Transaction Hash: B2C${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
                 
-                setTimeout(() => finalizeWithdrawal(amount), 4000);
+                setTimeout(() => finalizeWithdrawal(amount, destination), 4000);
             }, 2000);
         }
 
-        function finalizeWithdrawal(amount) {
+        function finalizeWithdrawal(amount, destination) {
             const modalContent = document.getElementById('modalContent');
+            const methodLabel = selectedMethod === 'mpesa' ? 'M-Pesa' : 'Bank Transfer';
+            
+            // Persist Withdrawal to LocalStorage
+            const withdrawals = JSON.parse(localStorage.getItem(`seller_withdrawals_${loggedInEmail}`) || "[]");
+            const newEntry = {
+                id: 'WDR' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                amount: parseFloat(amount),
+                method: methodLabel,
+                destination: destination,
+                status: 'Processing'
+            };
+            withdrawals.unshift(newEntry);
+            localStorage.setItem(`seller_withdrawals_${loggedInEmail}`, JSON.stringify(withdrawals));
+
             modalContent.innerHTML = `
                 <div style="text-align: center; padding: 20px 0;">
                     <div style="width: 80px; height: 80px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 20px;">
                         <i class="fas fa-check"></i>
                     </div>
                     <h2 style="margin-bottom: 10px;">Withdrawal Successful!</h2>
-                    <p style="color: #64748b; margin-bottom: 30px;">Your funds of <strong>$${parseFloat(amount).toFixed(2)}</strong> are being processed via ${selectedMethod.toUpperCase()}.</p>
+                    <p style="color: #64748b; margin-bottom: 5px;">Your funds of <strong>$${parseFloat(amount).toFixed(2)}</strong> are being processed.</p>
+                    <div style="background: #f8fafc; border-radius: 10px; padding: 15px; margin: 20px 0; text-align: left;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span style="color: #64748b;">Method</span><span style="font-weight: 700;">${methodLabel}</span></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span style="color: #64748b;">Destination</span><span style="font-weight: 700; font-size: 0.85rem;">${destination}</span></div>
+                        <div style="display: flex; justify-content: space-between;"><span style="color: #64748b;">Status</span><span style="font-weight: 700; color: #f59e0b;"><i class="fas fa-clock"></i> Processing</span></div>
+                    </div>
                     <button class="btn-withdraw" style="width: 100%;" onclick="window.location.reload()">Return to Dashboard</button>
                 </div>
             `;
-
-            // Record in history (simulated for now)
-            const newEntry = {
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-                amount: `-$${parseFloat(amount).toFixed(2)}`,
-                method: selectedMethod === 'mpesa' ? "M-Pesa B2C" : "Bank Transfer",
-                status: "Processing"
-            };
-            
-            // In a real app, you'd save this to localStorage/DB
         }
 
         function resetWithdrawFlow() {
@@ -453,52 +506,45 @@
         }
 
         function renderAdminPayouts() {
-            // Aggregate Platform commissions
             let totalOtherSellersSales = 0;
-
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key.startsWith('products_') && !key.includes(SAMMY_EMAIL)) {
                     const sellerProducts = JSON.parse(localStorage.getItem(key));
                     sellerProducts.forEach(p => {
-                        totalOtherSellersSales += (p.price * 2); // Mock 2 sales per product
+                        totalOtherSellersSales += (p.price * 2);
                     });
                 }
             }
 
             const platformCommissions = totalOtherSellersSales * 0.05;
             const adminShareOfOwnSales = sammyData.ownSales * 0.95;
-            const totalAdminIncome = adminShareOfOwnSales + platformCommissions;
+            const grossEarnings = adminShareOfOwnSales + platformCommissions;
 
-            // Update UI
-            document.getElementById('balanceLabel').textContent = "Total Admin Earnings";
-            document.getElementById('balanceValue').textContent = `$${totalAdminIncome.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-            document.getElementById('balanceNote').innerHTML = `<i class="fas fa-chart-line"></i> Incl. $${platformCommissions.toFixed(2)} Platform Fees`;
+            // Subtract Withdrawals
+            const withdrawals = JSON.parse(localStorage.getItem(`seller_withdrawals_${loggedInEmail}`) || "[]");
+            const totalWithdrawn = withdrawals.reduce((sum, w) => sum + w.amount, 0);
+            const netBalance = grossEarnings - totalWithdrawn;
+
+            document.getElementById('balanceLabel').textContent = "Total Admin Balance";
+            document.getElementById('balanceValue').textContent = `$${netBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('balanceNote').innerHTML = `<i class="fas fa-chart-line"></i> Total Earnings: $${grossEarnings.toFixed(2)}`;
 
             const withdrawBtn = document.getElementById('withdrawBtn');
-            withdrawBtn.style.opacity = "1";
-            withdrawBtn.style.cursor = "pointer";
+            if (netBalance >= 10) {
+                withdrawBtn.style.opacity = "1";
+                withdrawBtn.style.cursor = "pointer";
+            }
 
             const stats = document.querySelectorAll('.section-card span[style*="font-weight: 700"]');
             stats[0].textContent = `$${(sammyData.ownSales + totalOtherSellersSales).toLocaleString()}`;
             stats[1].textContent = `$${platformCommissions.toLocaleString()}`;
 
-            // Progress bars
             const bars = document.querySelectorAll('.section-card div[style*="height: 6px"] div');
             bars[0].style.width = "100%";
             bars[1].style.width = "10%";
 
-            const tbody = document.querySelector('.history-table tbody');
-            tbody.innerHTML = '';
-            sammyData.history.forEach(h => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${h.date}</td>
-                        <td style="font-weight: 700;">${h.amount}</td>
-                        <td><div class="method-badge">${h.method}</div></td>
-                        <td style="color: #10b981; font-weight: 600;">${h.status}</td>
-                    </tr>`;
-            });
+            renderHistoryTable(withdrawals);
         }
 
         function renderUserPayouts() {
@@ -506,12 +552,47 @@
             if (userProducts.length > 0) {
                 const totalSales = userProducts.reduce((sum, p) => sum + (p.price * 2), 0);
                 const fees = totalSales * 0.05;
-                const net = totalSales * 0.95;
+                const grossNet = totalSales * 0.95;
 
-                document.getElementById('balanceValue').textContent = `$${net.toFixed(2)}`;
+                // Subtract Withdrawals
+                const withdrawals = JSON.parse(localStorage.getItem(`seller_withdrawals_${loggedInEmail}`) || "[]");
+                const totalWithdrawn = withdrawals.reduce((sum, w) => sum + w.amount, 0);
+                const netBalance = grossNet - totalWithdrawn;
+
+                document.getElementById('balanceValue').textContent = `$${netBalance.toFixed(2)}`;
                 const stats = document.querySelectorAll('.section-card span[style*="font-weight: 700"]');
                 stats[0].textContent = `$${totalSales.toFixed(2)}`;
                 stats[1].textContent = `$${fees.toFixed(2)}`;
+
+                renderHistoryTable(withdrawals);
+            }
+        }
+
+        function renderHistoryTable(withdrawals) {
+            const tbody = document.querySelector('.history-table tbody');
+            const allHistory = [...sammyData.history]; // Start with hardcoded history
+            
+            // Add real withdrawals
+            withdrawals.forEach(w => {
+                allHistory.unshift({
+                    date: w.date,
+                    amount: `-$${w.amount.toFixed(2)}`,
+                    method: `${w.method} (${w.destination.length > 20 ? w.destination.substring(0, 17) + '...' : w.destination})`,
+                    status: w.status
+                });
+            });
+
+            if (allHistory.length > 0) {
+                tbody.innerHTML = '';
+                allHistory.forEach(h => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${h.date}</td>
+                            <td style="font-weight: 700; color: ${h.amount.startsWith('-') ? '#ef4444' : '#1e293b'};">${h.amount}</td>
+                            <td><div class="method-badge">${h.method}</div></td>
+                            <td style="color: ${h.status === 'Completed' ? '#10b981' : '#f59e0b'}; font-weight: 600;">${h.status}</td>
+                        </tr>`;
+                });
             }
         }
 

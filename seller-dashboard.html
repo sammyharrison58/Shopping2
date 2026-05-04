@@ -389,11 +389,18 @@
             // If Sammy and localStorage is empty, seed with initial data
             if (loggedInEmail === SAMMY_EMAIL && userProducts.length === 0) {
                 const initialProducts = [
-                    { id: '1', name: "Ultra-Light Marathon Sneakers", cat: "Sneakers", price: 45, stock: 24, status: "Active", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100", approved: true, sku: "SM-RUN-001" },
-                    { id: '2', name: "Brown Leather Oxford", cat: "Formal Shoes", price: 120, stock: 12, status: "Active", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100", approved: true, sku: "SM-FRM-022" }
+                    { id: 'MKT-ADMIN-1', name: "Ultra-Light Marathon Sneakers", cat: "Sneakers", price: 45, stock: 24, status: "Active", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=100", approved: true, sku: "SM-RUN-001" },
+                    { id: 'MKT-ADMIN-2', name: "Brown Leather Oxford", cat: "Formal Shoes", price: 120, stock: 12, status: "Active", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=100", approved: true, sku: "SM-FRM-022" }
                 ];
                 localStorage.setItem(`products_${SAMMY_EMAIL}`, JSON.stringify(initialProducts));
                 userProducts.push(...initialProducts);
+                
+                // Ensure admin is in the global sellers list
+                let sellers = JSON.parse(localStorage.getItem('all_platform_sellers') || "[]");
+                if (!sellers.includes(SAMMY_EMAIL)) {
+                    sellers.push(SAMMY_EMAIL);
+                    localStorage.setItem('all_platform_sellers', JSON.stringify(sellers));
+                }
             }
 
             if (userProducts.length === 0) {
