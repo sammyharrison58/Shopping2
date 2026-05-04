@@ -14,9 +14,9 @@ app.use(cors());
  */
 
 const DARAJA_CONFIG = {
-    consumerKey: 7382528,
-    consumerSecret: JohnLibendi,
-    passkey: 737381,
+    consumerKey: '7382528',
+    consumerSecret: 'JohnLibendi',
+    passkey: '737381',
     shortCode: '174379', // Sandbox default, replace with your real Paybill/Till
     callbackUrl: 'https://your-public-url.com/callback', // Must be a public HTTPS URL (use ngrok for local testing)
     isSandbox: true // Set to false for Production
