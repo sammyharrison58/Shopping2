@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAuth();
     checkBroadcast();
     initProductModal();
+    initMobileMenu();
 });
 
 function loadMarketplaceProducts() {
@@ -895,3 +896,105 @@ window.closeProductModal = function() {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeProductModal();
 });
+
+function initMobileMenu() {
+    // 1. Inject Universal Mobile Menu if it doesn't exist
+    if (!document.getElementById('mobile-nav-panel')) {
+        const mobileNavHTML = `
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+            <div class="mobile-nav-panel" id="mobile-nav-panel">
+                <div class="mobile-nav-header">
+                    <a href="index.html" class="logo">
+                        <i class="fas fa-shoe-prints"></i> ShoeMall
+                    </a>
+                    <button class="close-mobile-nav">&times;</button>
+                </div>
+                <div class="mobile-nav-content">
+                    <div class="mobile-nav-section">
+                        <h4>Navigation</h4>
+                        <ul class="mobile-links">
+                            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                            <li><a href="seller-auth.html"><i class="fas fa-store"></i> Sell on ShoeMall</a></li>
+                            <li><a href="About us.html"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                            <li><a href="shoe-coins.html"><i class="fas fa-coins"></i> Shoe Coins</a></li>
+                            <li><a href="Contacts.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="mobile-nav-section categories-mobile">
+                        <h4>Categories</h4>
+                        <ul class="mobile-links" id="mobile-categories-list">
+                            <!-- Categories will be copied here if on index.html -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', mobileNavHTML);
+    }
+
+    const toggle = document.getElementById('menu-toggle');
+    const closeBtn = document.querySelector('.close-mobile-nav');
+    const panel = document.getElementById('mobile-nav-panel');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    // Also handle index.html specific sidebar if it exists
+    const indexSidebar = document.querySelector('.sidebar');
+
+    if (!toggle || !panel || !overlay) return;
+
+    // Copy categories from sidebar to mobile menu if available
+    const sidebarLinks = document.querySelector('.side-nav');
+    const mobileCatList = document.getElementById('mobile-categories-list');
+    if (sidebarLinks && mobileCatList && mobileCatList.children.length === 0) {
+        mobileCatList.innerHTML = sidebarLinks.innerHTML;
+    } else if (!sidebarLinks) {
+        const catSection = document.querySelector('.categories-mobile');
+        if (catSection) catSection.style.display = 'none';
+    }
+
+    const openMenu = () => {
+        panel.classList.add('active');
+        overlay.classList.add('active');
+        if (indexSidebar) indexSidebar.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeMenu = () => {
+        panel.classList.remove('active');
+        overlay.classList.remove('active');
+        if (indexSidebar) indexSidebar.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    toggle.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+
+    // Close menu when a link is clicked
+    panel.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    // Handle Mobile Search Toggle (since I moved it in CSS)
+    const searchBar = document.querySelector('.search-bar');
+    if (window.innerWidth <= 600 && searchBar) {
+        // Create a search toggle if it doesn't exist
+        if (!document.getElementById('mobile-search-toggle')) {
+            const headerActions = document.querySelector('.header-actions');
+            const searchToggleHTML = `
+                <a href="#" class="action-item" id="mobile-search-toggle">
+                    <i class="fas fa-search"></i>
+                </a>
+            `;
+            if (headerActions) headerActions.insertAdjacentHTML('afterbegin', searchToggleHTML);
+            
+            document.getElementById('mobile-search-toggle').addEventListener('click', (e) => {
+                e.preventDefault();
+                searchBar.classList.toggle('active');
+                if (searchBar.classList.contains('active')) {
+                    searchBar.querySelector('input').focus();
+                }
+            });
+        }
+    }
+}

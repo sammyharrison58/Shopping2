@@ -44,6 +44,9 @@
     </div>
 
     <header>
+        <button class="menu-toggle" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
         <a href="index.html" class="logo">
             <i class="fas fa-shoe-prints"></i> ShoeMall
         </a>
@@ -67,8 +70,10 @@
     </header>
 
     <div class="main-container">
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
         <aside class="sidebar">
+            <button class="sidebar-close" id="sidebar-close">&times;</button>
             <h3>Categories</h3>
             <ul class="side-nav">
                 <li><a href="#" class="active-filter"><i class="fas fa-th-large" style="width: 25px;"></i> All Categories</a></li>
