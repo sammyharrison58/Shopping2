@@ -725,6 +725,11 @@ function showOrderSuccess(orderID, total) {
     orders.unshift(newOrder);
     localStorage.setItem('shoemall_orders', JSON.stringify(orders));
 
+    // Update Shoe Coins Tracking
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    let itemsBought = parseInt(localStorage.getItem('sc_items_bought') || '0', 10);
+    localStorage.setItem('sc_items_bought', itemsBought + totalItems);
+
     const main = document.getElementById('checkout-main');
     document.querySelector('.checkout-sidebar').style.display = 'none';
     document.getElementById('checkout-main').style.gridColumn = 'span 2';

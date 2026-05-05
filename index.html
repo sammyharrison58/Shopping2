@@ -90,18 +90,82 @@
                     <span class="flash-badge" style="margin-bottom: 15px; display: inline-block;">NEW SEASON</span>
                     <h2>Elevate Your <br>Every Step</h2>
                     <p>Discover the height of comfort and style with our exclusive Spring 2026 Collection.</p>
-                    <a href="#" class="shop-now">Explore Collection</a>
+                    <a href="#shop" class="shop-now">Explore Collection</a>
                 </div>
             </section>
 
-            <section class="flash-sale">
+            <section class="flash-sale" id="shop">
                 <div class="section-header">
                     <h2>Hot Releases <span class="flash-badge">Weekly Deals</span></h2>
-                    <a href="#" style="color: var(--primary-red); text-decoration: none; font-weight: 600;">View All
+                    <a href="#" onclick="document.querySelector('.side-nav a').click(); return false;" style="color: var(--primary-red); text-decoration: none; font-weight: 600;">View All
                         ></a>
                 </div>
 
                                                 <div class="product-grid">
+
+                    <div class="product-card" data-id="nike-aj1" data-category="sneakers">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">PREMIUM</span>
+                                <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&q=80&w=800" alt="Nike Air Jordan 1 Retro High OG - Chicago">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Nike Air Jordan 1 Retro High OG - Chicago</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$180.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+
+                    <div class="product-card" data-id="nike-am270" data-category="sneakers">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">BEST SELLER</span>
+                                <img src="https://images.unsplash.com/photo-1514989940723-e8e51635b782?auto=format&fit=crop&q=80&w=800" alt="Nike Air Max 270 - Triple Black">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Nike Air Max 270 - Triple Black</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$150.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+
+                    <div class="product-card" data-id="jordan-4-mb" data-category="sneakers">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">TRENDING</span>
+                                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800" alt="Air Jordan 4 Retro - Military Black">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Air Jordan 4 Retro - Military Black</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$210.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+
+                    <div class="product-card" data-id="nike-dunk-panda" data-category="sneakers">
+                        <a href="#" class="product-link">
+                            <div class="product-image">
+                                <span class="discount-tag">HOT</span>
+                                <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=800" alt="Nike Dunk Low - Black/White (Panda)">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Nike Dunk Low - Black/White (Panda)</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$110.00</span>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
 
                     <div class="product-card" data-id="1" data-category="sneakers">
                         <a href="#" class="product-link">
@@ -1346,10 +1410,10 @@
             <div class="footer-col">
                 <h4>Shop Categories</h4>
                 <ul class="footer-links">
-                    <li><a href="#">Men's Shoes</a></li>
-                    <li><a href="#">Women's Shoes</a></li>
-                    <li><a href="#">Kids' Shoes</a></li>
-                    <li><a href="#">Accessories</a></li>
+                    <li><a href="#shop" onclick="document.querySelectorAll('.side-nav a')[1].click();">Sneakers</a></li>
+                    <li><a href="#shop" onclick="document.querySelectorAll('.side-nav a')[2].click();">Formal Shoes</a></li>
+                    <li><a href="#shop" onclick="document.querySelectorAll('.side-nav a')[3].click();">Boots</a></li>
+                    <li><a href="#shop" onclick="document.querySelectorAll('.side-nav a')[4].click();">Sandals</a></li>
                 </ul>
             </div>
             <div class="footer-col">
